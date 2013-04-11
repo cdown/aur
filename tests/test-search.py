@@ -16,19 +16,19 @@ def relative(path):
 def testTooShort():
     with open(relative("samples/search/too-short")) as f:
         res = json.load(f)
-        list(a.parseSearch(res))
+        list(a.parseAURSearch(res, "search"))
 
 @raises(aur.UnknownAURError)
 def testBogusError():
     with open(relative("samples/search/bogus-error")) as f:
         res = json.load(f)
-        list(a.parseSearch(res))
+        list(a.parseAURSearch(res, "search"))
 
 @raises(aur.UnexpectedResponseTypeError)
 def testBogusReplyType():
     with open(relative("samples/search/unknown-type")) as f:
         res = json.load(f)
-        list(a.parseSearch(res))
+        list(a.parseAURSearch(res, "search"))
 
 def testRealPackage():
     """
@@ -40,5 +40,5 @@ def testRealPackage():
 
     with open(relative("samples/search/yturl-json")) as f:
         res = json.load(f)
-        data = list(a.parseSearch(res))
+        data = list(a.parseAURSearch(res, "search"))
         assert data == pickle.load(open(relative("samples/search/yturl-pickled"), "rb"))
