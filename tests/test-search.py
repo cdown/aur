@@ -4,6 +4,7 @@ from nose.tools import raises
 import imp
 import json
 import os
+import pickle
 
 aur = imp.load_source("aur", os.path.join(os.path.dirname(__file__), "../aur.py"))
 a = aur.AURClient()
@@ -28,3 +29,16 @@ def testBogusReplyType():
     with open(relative("samples/search/unknown-type")) as f:
         res = json.load(f)
         list(a.parseSearch(res))
+
+def testRealPackage():
+    """
+    >>> import aur
+    >>> import pickle
+    >>> a = aur.AURClient()
+    >>> pickle.dump(list(a.search("yturl")), open("tests/samples/search/yturl-pickled", "wb+"))
+    """
+
+    with open(relative("samples/search/yturl-json")) as f:
+        res = json.load(f)
+        data = list(a.parseSearch(res))
+        assert data == pickle.load(open(relative("samples/search/yturl-pickled"), "rb"))

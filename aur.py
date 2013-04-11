@@ -40,6 +40,12 @@ class Package(object):
     def __repr__(self):
         return "{0}({1})".format(self.__class__.__name__, self.__dict__)
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not self == other
+
 class AURClient(object):
     """Handles client requests to AUR."""
     def __init__(self, host="aur.archlinux.org", apiPath="/rpc.php"):
