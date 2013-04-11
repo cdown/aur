@@ -16,3 +16,9 @@ def testTooShort():
     with open(relative("samples/search/too-short")) as f:
         res = json.load(f)
         list(a.parseSearch(res))
+
+@raises(aur.UnknownAURError)
+def testBogusError():
+    with open(relative("samples/search/bogus-error")) as f:
+        res = json.load(f)
+        list(a.parseSearch(res))
