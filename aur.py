@@ -18,6 +18,10 @@ class UnexpectedResponseTypeError(Exception):
        request."""
     pass
 
+class UnknownPackageError(Exception):
+    """Raised when we make an info query, but the package does not exist."""
+    pass
+
 class Package(object):
     """Represents an AUR package and its respective metadata."""
     def __init__(self, NumVotes, Description, URLPath, LastModified, Name,
@@ -71,18 +75,23 @@ class AURClient(object):
 
     def search(self, package):
         """Perform a search on the live AUR API."""
-        results = self.performAURSearch(package, "search")
+        results = self.performSingleQuery(package, "search")
         parsed = self.parseAURSearch(results, "search")
         return parsed
 
     def msearch(self, user):
         """Perform a maintainer package search on the live AUR API."""
-        results = self.performAURSearch(user, "msearch")
+        results = self.performSingleQuery(user, "msearch")
         parsed = self.parseAURSearch(results, "msearch")
         return parsed
 
-    def performAURSearch(self, query, queryType):
-        """Perform a package search."""
+    def info(self, package):
+        results = self.performSingleQuery(package, "info")
+        parsed = self.parseAURPackageInfo(results)
+        return parsed
+
+    def performSingleQuery(self, query, queryType):
+        """Perform a single query on the API."""
         self.c.request("GET", self.apiPath + "?" +
             urllib.parse.urlencode({
                 "type": queryType,
@@ -106,4 +115,14 @@ class AURClient(object):
         for result in res["results"]:
             yield Package(**result)
 
+    def parseAURPackageInfo(self, res):
+        """Parse the results of a package search."""
+        if res["type"] == "error":
+            raise UnknownAURError(res["results"])
+        elif res["type"] != "info":
+            raise UnexpectedResponseTypeError(res["type"])
 
+        if not res["results"]:
+            raise UnknownPackageError
+
+        return Package(**res["results"])
