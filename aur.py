@@ -13,6 +13,11 @@ class UnknownAURError(Exception):
     """Raised when we receive an unknown AUR error."""
     pass
 
+class UnexpectedResponseTypeError(Exception):
+    """Raised when we receive an response type that is inappropriate for our
+       request."""
+    pass
+
 class Package(object):
     """Represents an AUR package and its respective metadata."""
     def __init__(self, NumVotes, Description, URLPath, LastModified, Name,
@@ -83,6 +88,8 @@ class AURClient(object):
                 raise QueryTooShortError
             else:
                 raise UnknownAURError(res["results"])
+        elif res["type"] != "search":
+            raise UnexpectedResponseTypeError(res["type"])
 
         for result in res["results"]:
             yield Package(**result)

@@ -22,3 +22,9 @@ def testBogusError():
     with open(relative("samples/search/bogus-error")) as f:
         res = json.load(f)
         list(a.parseSearch(res))
+
+@raises(aur.UnexpectedResponseTypeError)
+def testBogusReplyType():
+    with open(relative("samples/search/unknown-type")) as f:
+        res = json.load(f)
+        list(a.parseSearch(res))
