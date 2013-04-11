@@ -71,31 +71,39 @@ class AURClient(object):
 
     def search(self, package):
         """Perform a search on the live AUR API."""
-        results = self.performSearch(package)
-        parsed = self.parseSearch(results)
+        results = self.performAURSearch(package, "search")
+        parsed = self.parseAURSearch(results, "search")
         return parsed
 
-    def performSearch(self, package):
+    def msearch(self, user):
+        """Perform a maintainer package search on the live AUR API."""
+        results = self.performAURSearch(user, "msearch")
+        parsed = self.parseAURSearch(results, "msearch")
+        return parsed
+
+    def performAURSearch(self, query, queryType):
         """Perform a package search."""
         self.c.request("GET", self.apiPath + "?" +
             urllib.parse.urlencode({
-                "type": "search",
-                "arg": package
+                "type": queryType,
+                "arg": query
             })
         )
         res = self.c.getresponse()
         encoding = self._getEncoding(res.headers)
         return json.loads(res.read().decode(encoding))
 
-    def parseSearch(self, res):
+    def parseAURSearch(self, res, queryType):
         """Parse the results of a package search."""
         if res["type"] == "error":
             if res["results"] == "Query arg too small":
                 raise QueryTooShortError
             else:
                 raise UnknownAURError(res["results"])
-        elif res["type"] != "search":
+        elif res["type"] != queryType:
             raise UnexpectedResponseTypeError(res["type"])
 
         for result in res["results"]:
             yield Package(**result)
+
+
