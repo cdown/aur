@@ -3,6 +3,7 @@
 import http.client
 import json
 import urllib.parse
+import datetime
 
 class QueryTooShortError(Exception):
     """Raised when the query string is too short."""
@@ -20,11 +21,11 @@ class Package(object):
         self.votes = NumVotes
         self.description = Description
         self.path = URLPath
-        self.modified = LastModified
+        self.modified = datetime.datetime.utcfromtimestamp(LastModified)
         self.name = Name
         self.outOfDate = bool(OutOfDate)
         self.aurID = ID
-        self.submitted = FirstSubmitted
+        self.submitted = datetime.datetime.utcfromtimestamp(FirstSubmitted)
         self.maintainer = Maintainer
         self.version = Version
         self.categoryID = CategoryID
