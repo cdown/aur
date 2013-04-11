@@ -24,7 +24,7 @@ class Package(object):
         self.name = Name
         self.outOfDate = bool(OutOfDate)
         self.aurID = ID
-        self.submissionDate = FirstSubmitted
+        self.submitted = FirstSubmitted
         self.maintainer = Maintainer
         self.version = Version
         self.categoryID = CategoryID
