@@ -11,3 +11,7 @@ def testSearch():
 
 def testMSearch():
     assert len(list(a.msearch("cdown"))) > 1
+
+def testInfo():
+    assert a.info("yturl")
+    assert a.info(68930)
