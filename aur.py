@@ -20,7 +20,7 @@ class Package(object):
         self.votes = NumVotes
         self.description = Description
         self.path = URLPath
-        self.modifier = LastModified
+        self.modified = LastModified
         self.name = Name
         self.outOfDate = bool(OutOfDate)
         self.aurID = ID
