@@ -71,16 +71,16 @@ class AURClient(object):
 
     def search(self, package):
         """Perform a search on the live AUR API."""
-        results = self.performSearch(package)
+        results = self.performAURSearch(package, "search")
         parsed = self.parseSearch(results)
         return parsed
 
-    def performSearch(self, package):
+    def performAURSearch(self, query, queryType):
         """Perform a package search."""
         self.c.request("GET", self.apiPath + "?" +
             urllib.parse.urlencode({
-                "type": "search",
-                "arg": package
+                "type": queryType,
+                "arg": query
             })
         )
         res = self.c.getresponse()
