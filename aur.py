@@ -8,9 +8,9 @@ class QueryTooShortError(Exception):
 
 class AURClient(object):
     """Handles client requests to AUR."""
-    def __init__(self):
-        self.host = "aur.archlinux.org"
-        self.apiPath = "/rpc.php"
+    def __init__(self, host="aur.archlinux.org", apiPath="/rpc.php"):
+        self.host = host
+        self.apiPath = apiPath
         self.c = self._connect()
 
     def _connect(self):
