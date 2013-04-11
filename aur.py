@@ -59,6 +59,7 @@ class AURClient(object):
                 return preference
 
     def search(self, package):
+        """Perform a search on the live AUR API."""
         results = self.performSearch(package)
         parsed = self.parseSearch(results)
         return parsed
@@ -76,6 +77,7 @@ class AURClient(object):
         return json.loads(res.read().decode(encoding))
 
     def parseSearch(self, res):
+        """Parse the results of a package search."""
         if res["type"] == "error":
             if res["results"] == "Query arg too small":
                 raise QueryTooShortError
