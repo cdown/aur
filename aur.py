@@ -71,18 +71,18 @@ class AURClient(object):
 
     def search(self, package):
         """Perform a search on the live AUR API."""
-        results = self.performAURSearch(package, "search")
+        results = self.performSingleQuery(package, "search")
         parsed = self.parseAURSearch(results, "search")
         return parsed
 
     def msearch(self, user):
         """Perform a maintainer package search on the live AUR API."""
-        results = self.performAURSearch(user, "msearch")
+        results = self.performSingleQuery(user, "msearch")
         parsed = self.parseAURSearch(results, "msearch")
         return parsed
 
-    def performAURSearch(self, query, queryType):
-        """Perform a package search."""
+    def performSingleQuery(self, query, queryType):
+        """Perform a single query on the API."""
         self.c.request("GET", self.apiPath + "?" +
             urllib.parse.urlencode({
                 "type": queryType,
@@ -105,5 +105,3 @@ class AURClient(object):
 
         for result in res["results"]:
             yield Package(**result)
-
-
