@@ -58,6 +58,11 @@ class AURClient(object):
                 return preference
 
     def search(self, package):
+        results = self.performSearch(package)
+        parsed = self.parseSearch(results)
+        return parsed
+
+    def performSearch(self, package):
         """Perform a package search."""
         self.c.request("GET", self.apiPath + "?" +
             urllib.parse.urlencode({
@@ -67,8 +72,9 @@ class AURClient(object):
         )
         res = self.c.getresponse()
         encoding = self._getEncoding(res.headers)
-        res = json.loads(res.read().decode(encoding))
+        return json.loads(res.read().decode(encoding))
 
+    def parseSearch(self, res):
         if res["type"] == "error":
             if res["results"] == "Query arg too small":
                 raise QueryTooShortError
