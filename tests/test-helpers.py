@@ -10,10 +10,10 @@ a = aur.AURClient()
 
 yturlCategoryID = a.info("yturl").categoryID
 
-def testCategoryIDToCategory():
-    assert helpers.categoryIDToCategory(yturlCategoryID) == "multimedia"
+def testCategoryIDToCategoryName():
+    assert helpers.categoryIDToCategoryName(yturlCategoryID) == "multimedia"
 
 def testCategoryNameToCategoryID():
     assert helpers.categoryNameToCategoryID(
-               helpers.categoryIDToCategory(yturlCategoryID)
+               helpers.categoryIDToCategoryName(yturlCategoryID)
            ) == yturlCategoryID

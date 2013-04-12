@@ -14,7 +14,7 @@ class InvalidCategoryNameError(Exception):
     """Raised when an invalid category name is given."""
     pass
 
-def categoryIDToCategory(categoryID):
+def categoryIDToCategoryName(categoryID):
     try:
         return categories[categoryID]
     except IndexError:
