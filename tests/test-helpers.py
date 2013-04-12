@@ -8,6 +8,12 @@ helpers = imp.load_source("helpers", os.path.join(os.path.dirname(__file__), "..
 
 a = aur.AURClient()
 
+yturlCategoryID = a.info("yturl").categoryID
+
 def testCategoryIDToCategory():
-    yturlCategoryID = a.info("yturl").categoryID
     assert helpers.categoryIDToCategory(yturlCategoryID) == "multimedia"
+
+def testCategoryNameToCategoryID():
+    assert helpers.categoryNameToCategoryID(
+               helpers.categoryIDToCategory(yturlCategoryID)
+           ) == yturlCategoryID

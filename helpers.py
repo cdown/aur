@@ -10,8 +10,18 @@ class InvalidCategoryIDError(Exception):
     """Raised when an invalid category ID is given."""
     pass
 
+class InvalidCategoryNameError(Exception):
+    """Raised when an invalid category name is given."""
+    pass
+
 def categoryIDToCategory(categoryID):
     try:
         return categories[categoryID]
     except IndexError:
         raise InvalidCategoryIDError(categoryID)
+
+def categoryNameToCategoryID(name):
+    try:
+        return categories.index(name)
+    except ValueError:
+        raise InvalidCategoryNameError(name)
