@@ -78,27 +78,24 @@ class AURClient(object):
             if preference != None:
                 return preference
 
+    def _genericSearch(self, query, queryType):
+        results = self.performSingleQuery(query, queryType)
+        return self.parseAURSearch(results, queryType)
+
     def search(self, package):
         """Perform a search on the live AUR API."""
-        results = self.performSingleQuery(package, "search")
-        parsed = self.parseAURSearch(results, "search")
-        return parsed
+        return self._genericSearch(package, "search")
 
     def msearch(self, user):
         """Perform a maintainer package search on the live AUR API."""
-        results = self.performSingleQuery(user, "msearch")
-        parsed = self.parseAURSearch(results, "msearch")
-        return parsed
+        return self._genericSearch(user, "msearch")
 
     def info(self, package):
         results = self.performSingleQuery(package, "info")
-        parsed = self.parseAURPackageInfo(results)
-        return parsed
+        return self.parseAURPackageInfo(results)
 
     def multiinfo(self, packages):
-        results = self.performSingleQuery(packages, "multiinfo")
-        parsed = self.parseAURSearch(results, "multiinfo")
-        return parsed
+        return self._genericSearch(packages, "multiinfo")
 
     def performSingleQuery(self, query, queryType):
         """Perform a single query on the API."""
