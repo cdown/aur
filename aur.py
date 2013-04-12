@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-import http.client
-import json
-import urllib.parse
+try:
+    from http.client import HTTPSConnection
+    from urllib.parse import urlencode
+except ImportError:
+    from httplib import HTTPSConnection
+    from urllib import urlencode
 import datetime
+import json
+import sys
 
 class QueryTooShortError(Exception):
     """Raised when the query string is too short."""
@@ -59,7 +64,7 @@ class AURClient(object):
 
     def _connect(self):
         """Initialise connection to AUR."""
-        return http.client.HTTPSConnection(self.host)
+        return HTTPSConnection(self.host)
 
     def _getEncoding(self, headers, fallback="utf8"):
         """Finds the encoding for a response, or falls back to a default."""
@@ -93,13 +98,16 @@ class AURClient(object):
     def performSingleQuery(self, query, queryType):
         """Perform a single query on the API."""
         self.c.request("GET", self.apiPath + "?" +
-            urllib.parse.urlencode({
+            urlencode({
                 "type": queryType,
                 "arg": query
             })
         )
         res = self.c.getresponse()
-        encoding = self._getEncoding(res.headers)
+        if sys.version_info[0] == "3":
+            encoding = self._getEncoding(res.headers)
+        else:
+            encoding = "utf8"
         return json.loads(res.read().decode(encoding))
 
     def parseAURSearch(self, res, queryType):
