@@ -95,13 +95,18 @@ class AURClient(object):
         parsed = self.parseAURPackageInfo(results)
         return parsed
 
+    def multiinfo(self, packages):
+        results = self.performSingleQuery(packages, "multiinfo")
+        parsed = self.parseAURSearch(results, "multiinfo")
+        return parsed
+
     def performSingleQuery(self, query, queryType):
         """Perform a single query on the API."""
         self.c.request("GET", self.apiPath + "?" +
             urlencode({
                 "type": queryType,
                 "arg": query
-            })
+            }, doseq=True)
         )
         res = self.c.getresponse()
         if sys.version_info[0] == "3":
