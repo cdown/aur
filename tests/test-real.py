@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import imp
-import os
+import aur
 
-aur = imp.load_source("aur", os.path.join(os.path.dirname(__file__), "../aur.py"))
 a = aur.AURClient()
 
 def testSearch():
