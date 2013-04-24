@@ -22,8 +22,8 @@ class AURClient(object):
         """Initialise connection to AUR."""
         return HTTPSConnection(self.host)
 
-    def _genericSearch(self, query, queryType):
-        results = self.performSingleQuery(query, queryType)
+    def _genericSearch(self, query, queryType, multi=False):
+        results = self.performSingleQuery(query, queryType, multi)
         return self.parseAURSearch(results, queryType)
 
     def search(self, package):
@@ -39,14 +39,18 @@ class AURClient(object):
         return self.parseAURPackageInfo(results)
 
     def multiinfo(self, packages):
-        return self._genericSearch(packages, "multiinfo")
+        return self._genericSearch(packages, "multiinfo", multi=True)
 
-    def performSingleQuery(self, query, queryType):
+    def performSingleQuery(self, query, queryType, multi=False):
         """Perform a single query on the API."""
+        queryKey = "arg"
+        if multi:
+            queryKey += "[]"
+
         self.c.request("GET", self.apiPath + "?" +
             urlencode({
                 "type": queryType,
-                "arg": query
+                queryKey: query
             }, doseq=True)
         )
         res = self.c.getresponse()
