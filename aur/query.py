@@ -6,54 +6,10 @@ try:
 except ImportError:
     from httplib import HTTPSConnection
     from urllib import urlencode
-import datetime
 import json
 import sys
-
-class QueryTooShortError(Exception):
-    """Raised when the query string is too short."""
-    pass
-
-class UnknownAURError(Exception):
-    """Raised when we receive an unknown AUR error."""
-    pass
-
-class UnexpectedResponseTypeError(Exception):
-    """Raised when we receive an response type that is inappropriate for our
-       request."""
-    pass
-
-class UnknownPackageError(Exception):
-    """Raised when we make an info query, but the package does not exist."""
-    pass
-
-class Package(object):
-    """Represents an AUR package and its respective metadata."""
-    def __init__(self, NumVotes, Description, URLPath, LastModified, Name,
-                 OutOfDate, ID, FirstSubmitted, Maintainer, Version, CategoryID,
-                 License, URL):
-        self.votes = NumVotes
-        self.description = Description
-        self.path = URLPath
-        self.modified = datetime.datetime.utcfromtimestamp(LastModified)
-        self.name = Name
-        self.outOfDate = bool(OutOfDate)
-        self.aurID = ID
-        self.submitted = datetime.datetime.utcfromtimestamp(FirstSubmitted)
-        self.maintainer = Maintainer
-        self.version = Version
-        self.categoryID = CategoryID
-        self.license = License
-        self.url = URL
-
-    def __repr__(self):
-        return "{0}({1})".format(self.__class__.__name__, self.__dict__)
-
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self == other
+import aur.storageobjects
+import aur.exceptions
 
 class AURClient(object):
     """Handles client requests to AUR."""
@@ -116,23 +72,23 @@ class AURClient(object):
         """Parse the results of a package search."""
         if res["type"] == "error":
             if res["results"] == "Query arg too small":
-                raise QueryTooShortError
+                raise aur.exceptions.QueryTooShortError
             else:
-                raise UnknownAURError(res["results"])
+                raise aur.exceptions.UnknownAURError(res["results"])
         elif res["type"] != queryType:
-            raise UnexpectedResponseTypeError(res["type"])
+            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
 
         for result in res["results"]:
-            yield Package(**result)
+            yield aur.storageobjects.Package(**result)
 
     def parseAURPackageInfo(self, res):
         """Parse the results of a package search."""
         if res["type"] == "error":
-            raise UnknownAURError(res["results"])
+            raise aur.exceptions.UnknownAURError(res["results"])
         elif res["type"] != "info":
-            raise UnexpectedResponseTypeError(res["type"])
+            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
 
         if not res["results"]:
-            raise UnknownPackageError
+            raise aur.exceptions.UnknownPackageError
 
-        return Package(**res["results"])
+        return aur.storageobjects.Package(**res["results"])

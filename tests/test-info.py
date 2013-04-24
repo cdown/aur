@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 from nose.tools import raises
-import imp
+import aur
 import json
 import os
 import pickle
 import sys
 
-aur = imp.load_source("aur", os.path.join(os.path.dirname(__file__), "../aur.py"))
 a = aur.AURClient()
 
 def relative(path):
@@ -15,6 +14,8 @@ def relative(path):
 
 def testRealPackage():
     """
+    curl -o tests/samples/info/yturl-json 'https://aur.archlinux.org/rpc.php?type=info&arg=yturl'
+
     >>> import aur, pickle, sys
     >>> a = aur.AURClient()
     >>> major = sys.version_info[0]
