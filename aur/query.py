@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-try:
+try: # pragma: no cover
     from http.client import HTTPSConnection
     from urllib.parse import urlencode
 except ImportError:
