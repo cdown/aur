@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-try:
+try: # pragma: no cover
     from http.client import HTTPSConnection
     from urllib.parse import urlencode
 except ImportError:
@@ -22,20 +22,8 @@ class AURClient(object):
         """Initialise connection to AUR."""
         return HTTPSConnection(self.host)
 
-    def _getEncoding(self, headers, fallback="utf8"):
-        """Finds the encoding for a response, or falls back to a default."""
-        preferences = (
-            headers.get_content_charset(),
-            headers.get_charset(),
-            fallback
-        )
-
-        for preference in preferences:
-            if preference != None:
-                return preference
-
-    def _genericSearch(self, query, queryType):
-        results = self.performSingleQuery(query, queryType)
+    def _genericSearch(self, query, queryType, multi=False):
+        results = self.performSingleQuery(query, queryType, multi)
         return self.parseAURSearch(results, queryType)
 
     def search(self, package):
@@ -51,22 +39,22 @@ class AURClient(object):
         return self.parseAURPackageInfo(results)
 
     def multiinfo(self, packages):
-        return self._genericSearch(packages, "multiinfo")
+        return self._genericSearch(packages, "multiinfo", multi=True)
 
-    def performSingleQuery(self, query, queryType):
+    def performSingleQuery(self, query, queryType, multi=False):
         """Perform a single query on the API."""
+        queryKey = "arg"
+        if multi:
+            queryKey += "[]"
+
         self.c.request("GET", self.apiPath + "?" +
             urlencode({
                 "type": queryType,
-                "arg": query
+                queryKey: query
             }, doseq=True)
         )
         res = self.c.getresponse()
-        if sys.version_info[0] == "3":
-            encoding = self._getEncoding(res.headers)
-        else:
-            encoding = "utf8"
-        return json.loads(res.read().decode(encoding))
+        return json.loads(res.read().decode("utf8"))
 
     def parseAURSearch(self, res, queryType):
         """Parse the results of a package search."""

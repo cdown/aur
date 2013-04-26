@@ -13,3 +13,9 @@ def testMSearch():
 def testInfo():
     assert a.info("yturl")
     assert a.info(68930)
+
+def testMultiInfo():
+    assert len(list(a.multiinfo(("yturl")))) == 1
+    assert len(list(a.multiinfo(("yturl", "yturl")))) == 1
+    assert len(list(a.multiinfo(("yturl", "yturl-git")))) == 2
+    assert len(list(a.multiinfo(("yturl", "yturl-git", "100-percent-nonexistent")))) == 2
