@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import aur.exceptions
-import aur.storageobjects
+import aur.package
 import json
 import sys
 
@@ -70,7 +70,7 @@ class AURClient(object):
             raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
 
         for result in res["results"]:
-            yield aur.storageobjects.Package(**result)
+            yield aur.package.Package(**result)
 
     def parse_info(self, res):
         """Parse the results of a package search."""
@@ -82,4 +82,4 @@ class AURClient(object):
         if not res["results"]:
             raise aur.exceptions.UnknownPackageError
 
-        return aur.storageobjects.Package(**res["results"])
+        return aur.package.Package(**res["results"])
