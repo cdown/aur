@@ -2,20 +2,23 @@
 
 import aur.exceptions
 
+
 categories = [
-    None, None, "daemons", "devel", "editors", "emulators", "games", "gnome", "i18n",
-    "kde", "lib", "modules", "multimedia", "network", "office", "science",
-    "system", "x11", "xfce", "kernels"
+    None, None, "daemons", "devel", "editors", "emulators", "games", "gnome",
+    "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
+    "science", "system", "x11", "xfce", "kernels",
 ]
 
-def categoryIDToCategoryName(categoryID):
-    try:
-        return categories[categoryID]
-    except IndexError:
-        raise aur.exceptions.InvalidCategoryIDError(categoryID)
 
-def categoryNameToCategoryID(name):
+def category_id_to_name(cat_id):
     try:
-        return categories.index(name)
+        return categories[cat_id]
+    except IndexError:
+        raise aur.exceptions.InvalidCategoryIDError(cat_id)
+
+
+def category_name_to_id(cat_name):
+    try:
+        return categories.index(cat_name)
     except ValueError:
-        raise aur.exceptions.InvalidCategoryNameError(name)
+        raise aur.exceptions.InvalidCategoryNameError(cat_name)
