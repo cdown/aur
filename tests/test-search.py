@@ -15,16 +15,16 @@ def relative(path):
 def testTooShort():
     with open(relative("samples/search/too-short")) as f:
         res = json.load(f)
-        list(a.parseAURSearch(res, "search"))
+        list(a.parse_search(res, "search"))
 
 @raises(aur.exceptions.UnknownAURError)
 def testBogusError():
     with open(relative("samples/search/bogus-error")) as f:
         res = json.load(f)
-        list(a.parseAURSearch(res, "search"))
+        list(a.parse_search(res, "search"))
 
 @raises(aur.exceptions.UnexpectedResponseTypeError)
 def testBogusReplyType():
     with open(relative("samples/search/unknown-type")) as f:
         res = json.load(f)
-        list(a.parseAURSearch(res, "search"))
+        list(a.parse_search(res, "search"))
