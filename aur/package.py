@@ -4,7 +4,9 @@ import datetime
 
 
 class Package(object):
-    """Represents an AUR package and its respective metadata."""
+    """
+    Represents an AUR package and its respective metadata.
+    """
     def __init__(self, num_votes, description, url_path, last_modified, name, out_of_date,
                  id, first_submitted, maintainer, version, category_id,
                  license, url):
