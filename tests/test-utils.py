@@ -9,23 +9,23 @@ yturl_category_id = a.info("yturl").category_id
 
 
 def test_category_id_to_name():
-    assert aur.helpers.category_id_to_name(yturl_category_id) == "multimedia"
+    assert aur.utils.category_id_to_name(yturl_category_id) == "multimedia"
 
 
 def test_category_name_to_id():
-    category_name = aur.helpers.category_id_to_name(yturl_category_id)
-    assert aur.helpers.category_name_to_id(category_name) == yturl_category_id
+    category_name = aur.utils.category_id_to_name(yturl_category_id)
+    assert aur.utils.category_name_to_id(category_name) == yturl_category_id
 
 
 def test_bad_category_id():
     assert_raises(
         aur.exceptions.InvalidCategoryIDError,
-        aur.helpers.category_id_to_name, 9999
+        aur.utils.category_id_to_name, 9999
     )
 
 
 def test_bad_category_name():
     assert_raises(
         aur.exceptions.InvalidCategoryNameError,
-        aur.helpers.category_name_to_id, "nonexistent"
+        aur.utils.category_name_to_id, "nonexistent"
     )
