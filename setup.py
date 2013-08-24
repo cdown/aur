@@ -23,7 +23,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
     ],
 
-    packages = [
-        "aur"
-    ],
+    packages = [ "aur" ],
 )
