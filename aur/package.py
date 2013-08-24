@@ -2,24 +2,25 @@
 
 import datetime
 
+
 class Package(object):
     """Represents an AUR package and its respective metadata."""
-    def __init__(self, NumVotes, Description, URLPath, LastModified, Name,
-                 OutOfDate, ID, FirstSubmitted, Maintainer, Version, CategoryID,
-                 License, URL):
-        self.votes = NumVotes
-        self.description = Description
-        self.path = URLPath
-        self.modified = datetime.datetime.utcfromtimestamp(LastModified)
-        self.name = Name
-        self.outOfDate = bool(OutOfDate)
-        self.aurID = ID
-        self.submitted = datetime.datetime.utcfromtimestamp(FirstSubmitted)
-        self.maintainer = Maintainer
-        self.version = Version
-        self.categoryID = CategoryID
-        self.license = License
-        self.url = URL
+    def __init__(self, num_votes, description, url_path, last_modified, name, out_of_date,
+                 id, first_submitted, maintainer, version, category_id,
+                 license, url):
+        self.num_votes = num_votes
+        self.description = description
+        self.url_path = url_path
+        self.last_modified = datetime.datetime.utcfromtimestamp(last_modified)
+        self.name = name
+        self.out_of_date = bool(out_of_date)
+        self.id = id
+        self.first_submitted = datetime.datetime.utcfromtimestamp(first_submitted)
+        self.maintainer = maintainer
+        self.version = version
+        self.category_id = category_id
+        self.license = license
+        self.url = url
 
     def __repr__(self):
-        return "{0}({1})".format(self.__class__.__name__, self.__dict__)
+        return "%s(%r)" % (self.__class__.__name__, self.__dict__)

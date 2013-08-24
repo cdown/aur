@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+import aur
 import aur.exceptions
-import aur.package
 import json
 import sys
 
@@ -23,6 +23,24 @@ class AURClient(object):
     def _connect(self):
         """Initialise connection to AUR."""
         return HTTPSConnection(self.host)
+
+    def _decamelcase_output(self, pkg_info):
+        print(pkg_info)
+        return {
+            "num_votes":       pkg_info["NumVotes"],
+            "description":     pkg_info["Description"],
+            "url_path":        pkg_info["URLPath"],
+            "last_modified":   pkg_info["LastModified"],
+            "name":            pkg_info["Name"],
+            "out_of_date":     pkg_info["OutOfDate"],
+            "id":              pkg_info["ID"],
+            "first_submitted": pkg_info["FirstSubmitted"],
+            "maintainer":      pkg_info["Maintainer"],
+            "version":         pkg_info["Version"],
+            "category_id":     pkg_info["CategoryID"],
+            "license":         pkg_info["License"],
+            "url":             pkg_info["URL"],
+        }
 
     def _generic_search(self, query, query_type, multi=False):
         results = self.query(query, query_type, multi)
@@ -70,7 +88,8 @@ class AURClient(object):
             raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
 
         for result in res["results"]:
-            yield aur.package.Package(**result)
+            result = self._decamelcase_output(result)
+            yield aur.Package(**result)
 
     def parse_info(self, res):
         """Parse the results of a package search."""
@@ -82,4 +101,5 @@ class AURClient(object):
         if not res["results"]:
             raise aur.exceptions.UnknownPackageError
 
-        return aur.package.Package(**res["results"])
+        res = self._decamelcase_output(res["results"])
+        return aur.Package(**res)

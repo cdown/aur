@@ -5,7 +5,7 @@ import aur
 
 a = aur.AURClient()
 
-yturl_category_id = a.info("yturl").categoryID
+yturl_category_id = a.info("yturl").category_id
 
 def test_category_id_to_name():
     assert aur.helpers.category_id_to_name(yturl_category_id) == "multimedia"
