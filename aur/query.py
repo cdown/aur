@@ -14,17 +14,29 @@ except ImportError:
 
 
 class AURClient(object):
-    """Handles client requests to AUR."""
+    """
+    Handles client requests to AUR.
+    """
     def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php?"):
         self.api_host = api_host
         self.api_path = api_path
         self.c = self._connect()
 
     def _connect(self):
-        """Initialise connection to AUR."""
+        """
+        Initialise connection to AUR.
+
+        :returns: a HTTPSConnection to the AUR
+        """
         return HTTPSConnection(self.api_host)
 
     def _decamelcase_output(self, pkg_info):
+        """
+        Decamelcase API output to conform to PEP8.
+
+        :param pkg_info: API output data
+        :returns: decamelcased API output
+        """
         return {
             "num_votes":       pkg_info["NumVotes"],
             "description":     pkg_info["Description"],
@@ -42,26 +54,62 @@ class AURClient(object):
         }
 
     def _generic_search(self, query, query_type, multi=False):
+        """
+        Perform a generic search query.
+
+        :param query: the query to make
+        :param query_type: the type of query to make
+        :param multi: whether this query accepts multiple inputs
+        :returns: API response for this query
+        """
         results = self.query(query, query_type, multi)
         return self.parse_search(results, query_type)
 
     def search(self, package):
-        """Perform a search on the live AUR API."""
+        """
+        Perform a search on the AUR API.
+
+        :param package: the package name to search for
+        :returns: API response for this query
+        """
         return self._generic_search(package, "search")
 
     def msearch(self, user):
-        """Perform a maintainer package search on the live AUR API."""
+        """
+        Perform a maintainer package search on the AUR API.
+
+        :param user: the user to search for
+        :returns: API response for this query
+        """
         return self._generic_search(user, "msearch")
 
     def info(self, package):
+        """
+        Perform an info search on the AUR API.
+
+        :param package: the package to get information about
+        :returns: API response for this query
+        """
         results = self.query(package, "info")
         return self.parse_info(results)
 
     def multiinfo(self, packages):
+        """
+        Perform a multiinfo search on the AUR API.
+
+        :param packages: the packages to get information about
+        :returns: API response for this query
+        """
         return self._generic_search(packages, "multiinfo", multi=True)
 
     def query(self, query, query_type, multi=False):
-        """Perform a single query on the API."""
+        """
+        Perform a single query on the AUR API.
+
+        :param query: the search parameter(s)
+        :param query_type: the type of query to make
+        :param multi: whether this query accepts multiple inputs
+        """
         query_key = "arg"
         if multi:
             query_key += "[]"
@@ -86,7 +134,13 @@ class AURClient(object):
         return res_data
 
     def parse_search(self, res, query_type):
-        """Parse the results of a package search."""
+        """
+        Parse the results of a package search.
+
+        :param res: an AUR response
+        :param query_type: the type of query made to get the response
+        :returns: the packages for this query as Package objects
+        """
         if res["type"] == "error":
             if res["results"] == "Query arg too small":
                 raise aur.exceptions.QueryTooShortError
@@ -100,7 +154,12 @@ class AURClient(object):
             yield aur.Package(**result)
 
     def parse_info(self, res):
-        """Parse the results of a package search."""
+        """
+        Parse the results of a package info search.
+
+        :param res: an AUR response
+        :returns: the package for this query as a Package object
+        """
         if res["type"] == "error":
             raise aur.exceptions.UnknownAURError(res["results"])
         elif res["type"] != "info":
