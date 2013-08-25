@@ -15,14 +15,14 @@ except ImportError:
 
 class AURClient(object):
     """Handles client requests to AUR."""
-    def __init__(self, host="aur.archlinux.org", api_path="/rpc.php"):
-        self.host = host
+    def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php"):
+        self.api_host = api_host
         self.api_path = api_path
         self.c = self._connect()
 
     def _connect(self):
         """Initialise connection to AUR."""
-        return HTTPSConnection(self.host)
+        return HTTPSConnection(self.api_host)
 
     def _decamelcase_output(self, pkg_info):
         print(pkg_info)
