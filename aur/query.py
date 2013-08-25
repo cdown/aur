@@ -73,8 +73,17 @@ class AURClient(object):
                 query_key: query
             }, doseq=True)
         )
-        res = self.c.getresponse()
-        return json.loads(res.read().decode("utf8"))
+        res_handle = self.c.getresponse()
+
+        # Annoyingly, the AUR API does not send any indication of the content's
+        # character encoding. web/lib/aurjson.class.php shows that the AUR
+        # returns data from json_encode(), which means that we should always
+        # get UTF8 (but still, meh).
+        res_data_raw = res_handle.read()
+        res_encoding = "utf8"
+        res_data = json.loads(res_data_raw.decode(res_encoding))
+
+        return res_data
 
     def parse_search(self, res, query_type):
         """Parse the results of a package search."""
