@@ -63,7 +63,7 @@ class AURClient(object):
         :returns: API response for this query
         """
         res_data = self.query(query, query_type, multi)
-        return self.parse_search(res_data, query_type)
+        return self.parse_multi(res_data, query_type)
 
     def search(self, package):
         """
@@ -91,7 +91,7 @@ class AURClient(object):
         :returns: API response for this query
         """
         res_data = self.query(package, "info")
-        return self.parse_info(res_data)
+        return self.parse_single(res_data, "info")
 
     def multiinfo(self, packages):
         """
@@ -133,13 +133,12 @@ class AURClient(object):
 
         return res_data
 
-    def parse_search(self, res_data, query_type):
+    def _api_error_check(self, res_data, query_type):
         """
-        Parse the results of a package search.
+        Perform error checking on API data.
 
         :param res_data: an AUR response
         :param query_type: the type of query made to get the response
-        :returns: the packages for this query as Package objects
         """
         if res_data["type"] == "error":
             if res_data["results"] == "Query arg too small":
@@ -149,24 +148,31 @@ class AURClient(object):
         elif res_data["type"] != query_type:
             raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
+    def parse_multi(self, res_data, query_type):
+        """
+        Parse the results of a package search.
+
+        :param res_data: an AUR response
+        :param query_type: the type of query made to get the response
+        :returns: the packages for this query as Package objects
+        """
+        self._api_error_check(res_data, query_type)
+
         for package in res_data["results"]:
             package = self._decamelcase_output(package)
             yield aur.Package(**package)
 
-    def parse_info(self, res_data):
+    def parse_single(self, res_data, query_type):
         """
         Parse the results of a package info search.
 
         :param res_data: an AUR response
         :returns: the package for this query as a Package object
         """
-        if res_data["type"] == "error":
-            raise aur.exceptions.UnknownAURError(res_data["results"])
-        elif res_data["type"] != "info":
-            raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
+        self._api_error_check(res_data, query_type)
 
         if not res_data["results"]:
-            raise aur.exceptions.UnknownPackageError
+            return None
 
         package = self._decamelcase_output(res_data["results"])
         return aur.Package(**package)
