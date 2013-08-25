@@ -30,27 +30,27 @@ class AURClient(object):
         """
         return HTTPSConnection(self.api_host)
 
-    def _decamelcase_output(self, pkg_info):
+    def _decamelcase_output(self, api_data):
         """
         Decamelcase API output to conform to PEP8.
 
-        :param pkg_info: API output data
+        :param api_data: API output data
         :returns: decamelcased API output
         """
         return {
-            "num_votes":       pkg_info["NumVotes"],
-            "description":     pkg_info["Description"],
-            "url_path":        pkg_info["URLPath"],
-            "last_modified":   pkg_info["LastModified"],
-            "name":            pkg_info["Name"],
-            "out_of_date":     pkg_info["OutOfDate"],
-            "id":              pkg_info["ID"],
-            "first_submitted": pkg_info["FirstSubmitted"],
-            "maintainer":      pkg_info["Maintainer"],
-            "version":         pkg_info["Version"],
-            "category_id":     pkg_info["CategoryID"],
-            "license":         pkg_info["License"],
-            "url":             pkg_info["URL"],
+            "num_votes":       api_data["NumVotes"],
+            "description":     api_data["Description"],
+            "url_path":        api_data["URLPath"],
+            "last_modified":   api_data["LastModified"],
+            "name":            api_data["Name"],
+            "out_of_date":     api_data["OutOfDate"],
+            "id":              api_data["ID"],
+            "first_submitted": api_data["FirstSubmitted"],
+            "maintainer":      api_data["Maintainer"],
+            "version":         api_data["Version"],
+            "category_id":     api_data["CategoryID"],
+            "license":         api_data["License"],
+            "url":             api_data["URL"],
         }
 
     def _generic_search(self, query, query_type, multi=False):
@@ -62,8 +62,8 @@ class AURClient(object):
         :param multi: whether this query accepts multiple inputs
         :returns: API response for this query
         """
-        results = self.query(query, query_type, multi)
-        return self.parse_search(results, query_type)
+        res_data = self.query(query, query_type, multi)
+        return self.parse_search(res_data, query_type)
 
     def search(self, package):
         """
@@ -90,8 +90,8 @@ class AURClient(object):
         :param package: the package to get information about
         :returns: API response for this query
         """
-        results = self.query(package, "info")
-        return self.parse_info(results)
+        res_data = self.query(package, "info")
+        return self.parse_info(res_data)
 
     def multiinfo(self, packages):
         """
@@ -133,40 +133,40 @@ class AURClient(object):
 
         return res_data
 
-    def parse_search(self, res, query_type):
+    def parse_search(self, res_data, query_type):
         """
         Parse the results of a package search.
 
-        :param res: an AUR response
+        :param res_data: an AUR response
         :param query_type: the type of query made to get the response
         :returns: the packages for this query as Package objects
         """
-        if res["type"] == "error":
-            if res["results"] == "Query arg too small":
+        if res_data["type"] == "error":
+            if res_data["results"] == "Query arg too small":
                 raise aur.exceptions.QueryTooShortError
             else:
-                raise aur.exceptions.UnknownAURError(res["results"])
-        elif res["type"] != query_type:
-            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
+                raise aur.exceptions.UnknownAURError(res_data["results"])
+        elif res_data["type"] != query_type:
+            raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
-        for result in res["results"]:
-            result = self._decamelcase_output(result)
-            yield aur.Package(**result)
+        for package in res_data["results"]:
+            package = self._decamelcase_output(package)
+            yield aur.Package(**package)
 
-    def parse_info(self, res):
+    def parse_info(self, res_data):
         """
         Parse the results of a package info search.
 
-        :param res: an AUR response
+        :param res_data: an AUR response
         :returns: the package for this query as a Package object
         """
-        if res["type"] == "error":
-            raise aur.exceptions.UnknownAURError(res["results"])
-        elif res["type"] != "info":
-            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
+        if res_data["type"] == "error":
+            raise aur.exceptions.UnknownAURError(res_data["results"])
+        elif res_data["type"] != "info":
+            raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
-        if not res["results"]:
+        if not res_data["results"]:
             raise aur.exceptions.UnknownPackageError
 
-        res = self._decamelcase_output(res["results"])
-        return aur.Package(**res)
+        package = self._decamelcase_output(res_data["results"])
+        return aur.Package(**package)
