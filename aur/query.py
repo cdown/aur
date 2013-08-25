@@ -25,7 +25,6 @@ class AURClient(object):
         return HTTPSConnection(self.api_host)
 
     def _decamelcase_output(self, pkg_info):
-        print(pkg_info)
         return {
             "num_votes":       pkg_info["NumVotes"],
             "description":     pkg_info["Description"],
