@@ -15,7 +15,7 @@ except ImportError:
 
 class AURClient(object):
     """Handles client requests to AUR."""
-    def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php"):
+    def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php?"):
         self.api_host = api_host
         self.api_path = api_path
         self.c = self._connect()
@@ -68,7 +68,7 @@ class AURClient(object):
 
         self.c.request(
             "GET",
-            self.api_path + "?" + urlencode({
+            self.api_path + urlencode({
                 "type": query_type,
                 query_key: query
             }, doseq=True)
