@@ -18,7 +18,7 @@ that you can focus on using AUR data, not retrieving or parsing it.
     >>> import aur
     >>> client = aur.AURClient()
     >>> list(client.search("yturl"))
-    [<Package: yturl-git>, <Package: yturl>]
+    [<Package: 'yturl-git'>, <Package: 'yturl'>]
     >>> package = client.info("tzupdate-git")
     >>> package.description
     'Set the local timezone based on IP geolocation.'
