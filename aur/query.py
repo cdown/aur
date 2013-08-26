@@ -1,82 +1,178 @@
 #!/usr/bin/env python
 
-try: # pragma: no cover
+import aur
+import aur.exceptions
+import json
+import sys
+
+try:
     from http.client import HTTPSConnection
     from urllib.parse import urlencode
 except ImportError:
     from httplib import HTTPSConnection
     from urllib import urlencode
-import json
-import sys
-import aur.storageobjects
-import aur.exceptions
+
 
 class AURClient(object):
-    """Handles client requests to AUR."""
-    def __init__(self, host="aur.archlinux.org", apiPath="/rpc.php"):
-        self.host = host
-        self.apiPath = apiPath
+    """
+    Handles client requests to AUR.
+    """
+    def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php?"):
+        self.api_host = api_host
+        self.api_path = api_path
         self.c = self._connect()
 
     def _connect(self):
-        """Initialise connection to AUR."""
-        return HTTPSConnection(self.host)
+        """
+        Initialise connection to AUR.
 
-    def _genericSearch(self, query, queryType, multi=False):
-        results = self.performSingleQuery(query, queryType, multi)
-        return self.parseAURSearch(results, queryType)
+        :returns: a HTTPSConnection to the AUR
+        """
+        return HTTPSConnection(self.api_host)
+
+    def _decamelcase_output(self, api_data):
+        """
+        Decamelcase API output to conform to PEP8.
+
+        :param api_data: API output data
+        :returns: decamelcased API output
+        """
+        return {
+            "num_votes":       api_data["NumVotes"],
+            "description":     api_data["Description"],
+            "url_path":        api_data["URLPath"],
+            "last_modified":   api_data["LastModified"],
+            "name":            api_data["Name"],
+            "out_of_date":     api_data["OutOfDate"],
+            "id":              api_data["ID"],
+            "first_submitted": api_data["FirstSubmitted"],
+            "maintainer":      api_data["Maintainer"],
+            "version":         api_data["Version"],
+            "category_id":     api_data["CategoryID"],
+            "license":         api_data["License"],
+            "url":             api_data["URL"],
+        }
+
+    def _generic_search(self, query, query_type, multi=False):
+        """
+        Perform a generic search query.
+
+        :param query: the query to make
+        :param query_type: the type of query to make
+        :param multi: whether this query accepts multiple inputs
+        :returns: API response for this query
+        """
+        res_data = self.query(query, query_type, multi)
+        return self.parse_multi(res_data, query_type)
 
     def search(self, package):
-        """Perform a search on the live AUR API."""
-        return self._genericSearch(package, "search")
+        """
+        Perform a search on the AUR API.
+
+        :param package: the package name to search for
+        :returns: API response for this query
+        """
+        return self._generic_search(package, "search")
 
     def msearch(self, user):
-        """Perform a maintainer package search on the live AUR API."""
-        return self._genericSearch(user, "msearch")
+        """
+        Perform a maintainer package search on the AUR API.
+
+        :param user: the user to search for
+        :returns: API response for this query
+        """
+        return self._generic_search(user, "msearch")
 
     def info(self, package):
-        results = self.performSingleQuery(package, "info")
-        return self.parseAURPackageInfo(results)
+        """
+        Perform an info search on the AUR API.
+
+        :param package: the package to get information about
+        :returns: API response for this query
+        """
+        res_data = self.query(package, "info")
+        return self.parse_single(res_data, "info")
 
     def multiinfo(self, packages):
-        return self._genericSearch(packages, "multiinfo", multi=True)
+        """
+        Perform a multiinfo search on the AUR API.
 
-    def performSingleQuery(self, query, queryType, multi=False):
-        """Perform a single query on the API."""
-        queryKey = "arg"
+        :param packages: the packages to get information about
+        :returns: API response for this query
+        """
+        return self._generic_search(packages, "multiinfo", multi=True)
+
+    def query(self, query, query_type, multi=False):
+        """
+        Perform a single query on the AUR API.
+
+        :param query: the search parameter(s)
+        :param query_type: the type of query to make
+        :param multi: whether this query accepts multiple inputs
+        """
+        query_key = "arg"
         if multi:
-            queryKey += "[]"
+            query_key += "[]"
 
-        self.c.request("GET", self.apiPath + "?" +
-            urlencode({
-                "type": queryType,
-                queryKey: query
+        self.c.request(
+            "GET",
+            self.api_path + urlencode({
+                "type": query_type,
+                query_key: query
             }, doseq=True)
         )
-        res = self.c.getresponse()
-        return json.loads(res.read().decode("utf8"))
+        res_handle = self.c.getresponse()
 
-    def parseAURSearch(self, res, queryType):
-        """Parse the results of a package search."""
-        if res["type"] == "error":
-            if res["results"] == "Query arg too small":
+        # Annoyingly, the AUR API does not send any indication of the content's
+        # character encoding. web/lib/aurjson.class.php shows that the AUR
+        # returns data from json_encode(), which means that we should always
+        # get UTF8 (but still, meh).
+        res_data_raw = res_handle.read()
+        res_encoding = "utf8"
+        res_data = json.loads(res_data_raw.decode(res_encoding))
+
+        return res_data
+
+    def _api_error_check(self, res_data, query_type):
+        """
+        Perform error checking on API data.
+
+        :param res_data: an AUR response
+        :param query_type: the type of query made to get the response
+        """
+        if res_data["type"] == "error":
+            if res_data["results"] == "Query arg too small":
                 raise aur.exceptions.QueryTooShortError
             else:
-                raise aur.exceptions.UnknownAURError(res["results"])
-        elif res["type"] != queryType:
-            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
+                raise aur.exceptions.UnknownAURError(res_data["results"])
+        elif res_data["type"] != query_type:
+            raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
-        for result in res["results"]:
-            yield aur.storageobjects.Package(**result)
+    def parse_multi(self, res_data, query_type):
+        """
+        Parse the results of a package search.
 
-    def parseAURPackageInfo(self, res):
-        """Parse the results of a package search."""
-        if res["type"] == "error":
-            raise aur.exceptions.UnknownAURError(res["results"])
-        elif res["type"] != "info":
-            raise aur.exceptions.UnexpectedResponseTypeError(res["type"])
+        :param res_data: an AUR response
+        :param query_type: the type of query made to get the response
+        :returns: the packages for this query as Package objects
+        """
+        self._api_error_check(res_data, query_type)
 
-        if not res["results"]:
-            raise aur.exceptions.UnknownPackageError
+        for package in res_data["results"]:
+            package = self._decamelcase_output(package)
+            yield aur.Package(**package)
 
-        return aur.storageobjects.Package(**res["results"])
+    def parse_single(self, res_data, query_type):
+        """
+        Parse the results of a package info search.
+
+        :param res_data: an AUR response
+        :returns: the package for this query as a Package object
+        """
+        self._api_error_check(res_data, query_type)
+
+        if not res_data["results"]:
+            return None
+
+        package = self._decamelcase_output(res_data["results"])
+        return aur.Package(**package)
