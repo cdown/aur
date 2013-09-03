@@ -3,13 +3,12 @@
 import aur
 import aur.exceptions
 import json
+import requests
 import sys
 
 try: # pragma: no cover
-    from http.client import HTTPSConnection
     from urllib.parse import urlencode
 except ImportError: # pragma: no cover
-    from httplib import HTTPSConnection
     from urllib import urlencode
 
 
@@ -17,18 +16,8 @@ class AURClient(object):
     """
     Handles client requests to AUR.
     """
-    def __init__(self, api_host="aur.archlinux.org", api_path="/rpc.php?"):
-        self.api_host = api_host
-        self.api_path = api_path
-        self.c = self._connect()
-
-    def _connect(self):
-        """
-        Initialise connection to AUR.
-
-        :returns: a HTTPSConnection to the AUR
-        """
-        return HTTPSConnection(self.api_host)
+    def __init__(self, api_url="http://aur.archlinux.org/rpc.php?"):
+        self.api_url = api_url
 
     def _decamelcase_output(self, api_data):
         """
@@ -114,22 +103,13 @@ class AURClient(object):
         if multi:
             query_key += "[]"
 
-        self.c.request(
-            "GET",
-            self.api_path + urlencode({
+        res_handle = requests.get(
+            self.api_url + urlencode({
                 "type": query_type,
                 query_key: query
             }, doseq=True)
         )
-        res_handle = self.c.getresponse()
-
-        # Annoyingly, the AUR API does not send any indication of the content's
-        # character encoding. web/lib/aurjson.class.php shows that the AUR
-        # returns data from json_encode(), which means that we should always
-        # get UTF8 (but still, meh).
-        res_data_raw = res_handle.read()
-        res_encoding = "utf8"
-        res_data = json.loads(res_data_raw.decode(res_encoding))
+        res_data = res_handle.json()
 
         return res_data
 
