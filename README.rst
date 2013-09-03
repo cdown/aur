@@ -1,12 +1,10 @@
-pyaur
-=====
-
 .. image:: https://travis-ci.org/cdown/pyaur.png?branch=master
     :target: https://travis-ci.org/cdown/pyaur
 .. image:: https://coveralls.io/repos/cdown/pyaur/badge.png?branch=master
     :target: https://coveralls.io/r/cdown/pyaur?branch=master
-.. image:: https://pypip.in/v/pyaur/badge.png
-    :target: https://crate.io/packages/pyaur
+
+pyaur
+=====
 
 **pyaur** is a Python library that makes it easy to access and parse data from
 the Arch User Repository API.
