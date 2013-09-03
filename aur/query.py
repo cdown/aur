@@ -6,9 +6,9 @@ import json
 import requests
 import sys
 
-try: # pragma: no cover
+try:  # pragma: no cover
     from urllib.parse import urlencode
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     from urllib import urlencode
 
 
@@ -35,6 +35,7 @@ def _decamelcase_output(api_data):
         "url":             api_data["URL"],
     }
 
+
 def _generic_search(query, query_type, multi=False):
     """
     Perform a generic search query.
@@ -47,6 +48,7 @@ def _generic_search(query, query_type, multi=False):
     res_data = query_api(query, query_type, multi)
     return parse_multi(res_data, query_type)
 
+
 def search(package):
     """
     Perform a search on the AUR API.
@@ -56,6 +58,7 @@ def search(package):
     """
     return _generic_search(package, "search")
 
+
 def msearch(user):
     """
     Perform a maintainer package search on the AUR API.
@@ -64,6 +67,7 @@ def msearch(user):
     :returns: API response for this query
     """
     return _generic_search(user, "msearch")
+
 
 def info(package):
     """
@@ -75,6 +79,7 @@ def info(package):
     res_data = query_api(package, "info")
     return parse_single(res_data, "info")
 
+
 def multiinfo(packages):
     """
     Perform a multiinfo search on the AUR API.
@@ -83,6 +88,7 @@ def multiinfo(packages):
     :returns: API response for this query
     """
     return _generic_search(packages, "multiinfo", multi=True)
+
 
 def query_api(query, query_type, multi=False):
     """
@@ -106,6 +112,7 @@ def query_api(query, query_type, multi=False):
 
     return res_data
 
+
 def _api_error_check(res_data, query_type):
     """
     Perform error checking on API data.
@@ -121,6 +128,7 @@ def _api_error_check(res_data, query_type):
     elif res_data["type"] != query_type:
         raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
+
 def parse_multi(res_data, query_type):
     """
     Parse the results of a package search.
@@ -134,6 +142,7 @@ def parse_multi(res_data, query_type):
     for package in res_data["results"]:
         package = _decamelcase_output(package)
         yield aur.Package(**package)
+
 
 def parse_single(res_data, query_type):
     """

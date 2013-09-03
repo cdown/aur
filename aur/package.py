@@ -18,5 +18,5 @@ class Package(object):
         self.last_modified = datetime.utcfromtimestamp(last_modified)
         self.out_of_date = bool(out_of_date)
 
-    def __repr__(self): # pragma: no cover
+    def __repr__(self):  # pragma: no cover
         return "<%s: %r>" % (self.__class__.__name__, self.name)

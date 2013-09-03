@@ -2,6 +2,7 @@
 
 import aur
 
+
 def test_search():
     assert len(list(aur.search("python2"))) > 50
 
