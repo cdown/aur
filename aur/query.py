@@ -5,10 +5,10 @@ import aur.exceptions
 import json
 import sys
 
-try:
+try: # pragma: no cover
     from http.client import HTTPSConnection
     from urllib.parse import urlencode
-except ImportError:
+except ImportError: # pragma: no cover
     from httplib import HTTPSConnection
     from urllib import urlencode
 
