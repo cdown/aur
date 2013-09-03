@@ -24,4 +24,5 @@ setup(
     ],
 
     packages = [ "aur" ],
+    requires = [ "requests" ],
 )
