@@ -12,6 +12,46 @@ except ImportError:  # pragma: no cover
     from urllib import urlencode
 
 
+def search(package):
+    """
+    Perform a search on the AUR API.
+
+    :param package: the package name to search for
+    :returns: API response for this query
+    """
+    return _generic_search(package, "search")
+
+
+def msearch(user):
+    """
+    Perform a maintainer package search on the AUR API.
+
+    :param user: the user to search for
+    :returns: API response for this query
+    """
+    return _generic_search(user, "msearch")
+
+
+def info(package):
+    """
+    Perform an info search on the AUR API.
+
+    :param package: the package to get information about
+    :returns: API response for this query
+    """
+    res_data = _query_api(package, "info")
+    return _parse_single(res_data, "info")
+
+
+def multiinfo(packages):
+    """
+    Perform a multiinfo search on the AUR API.
+
+    :param packages: the packages to get information about
+    :returns: API response for this query
+    """
+    return _generic_search(packages, "multiinfo", multi=True)
+
 def _decamelcase_output(api_data):
     """
     Decamelcase API output to conform to PEP8.
@@ -45,52 +85,13 @@ def _generic_search(query, query_type, multi=False):
     :param multi: whether this query accepts multiple inputs
     :returns: API response for this query
     """
-    res_data = query_api(query, query_type, multi)
-    return parse_multi(res_data, query_type)
+    res_data = _query_api(query, query_type, multi)
+    return _parse_multi(res_data, query_type)
 
 
-def search(package):
-    """
-    Perform a search on the AUR API.
-
-    :param package: the package name to search for
-    :returns: API response for this query
-    """
-    return _generic_search(package, "search")
 
 
-def msearch(user):
-    """
-    Perform a maintainer package search on the AUR API.
-
-    :param user: the user to search for
-    :returns: API response for this query
-    """
-    return _generic_search(user, "msearch")
-
-
-def info(package):
-    """
-    Perform an info search on the AUR API.
-
-    :param package: the package to get information about
-    :returns: API response for this query
-    """
-    res_data = query_api(package, "info")
-    return parse_single(res_data, "info")
-
-
-def multiinfo(packages):
-    """
-    Perform a multiinfo search on the AUR API.
-
-    :param packages: the packages to get information about
-    :returns: API response for this query
-    """
-    return _generic_search(packages, "multiinfo", multi=True)
-
-
-def query_api(query, query_type, multi=False):
+def _query_api(query, query_type, multi=False):
     """
     Perform a single query on the AUR API.
 
@@ -129,7 +130,7 @@ def _api_error_check(res_data, query_type):
         raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
 
 
-def parse_multi(res_data, query_type):
+def _parse_multi(res_data, query_type):
     """
     Parse the results of a package search.
 
@@ -144,7 +145,7 @@ def parse_multi(res_data, query_type):
         yield aur.Package(**package)
 
 
-def parse_single(res_data, query_type):
+def _parse_single(res_data, query_type):
     """
     Parse the results of a package info search.
 
