@@ -4,8 +4,7 @@ from nose.tools import assert_raises
 import aur
 
 
-a = aur.AURClient()
-yturl_category_id = a.info("yturl").category_id
+yturl_category_id = aur.info("yturl").category_id
 
 
 def test_category_id_to_name():

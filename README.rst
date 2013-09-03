@@ -18,14 +18,13 @@ that you can focus on using AUR data, not retrieving or parsing it.
 .. code:: python
 
     >>> import aur
-    >>> client = aur.AURClient()
-    >>> list(client.search("yturl"))
+    >>> list(aur.search("yturl"))
     [<Package: 'yturl-git'>, <Package: 'yturl'>]
-    >>> package = client.info("tzupdate-git")
+    >>> package = aur.info("cower")
     >>> package.description
-    'Set the local timezone based on IP geolocation.'
+    'A simple AUR agent with a pretentious name'
     >>> package.last_modified
-    datetime.datetime(2013, 8, 23, 21, 11, 6)
+    datetime.datetime(2013, 4, 5, 0, 18, 46)
 
 Installation
 ------------
