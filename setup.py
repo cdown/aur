@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(
-    name = "aur",
+    name = "pyaur",
     version = "0.9.0",
     description = "Arch User Repository API library",
     url = "https://github.com/cdown/pyaur/",
