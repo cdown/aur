@@ -171,8 +171,5 @@ class AURClient(object):
         """
         self._api_error_check(res_data, query_type)
 
-        if not res_data["results"]:
-            return None
-
         package = self._decamelcase_output(res_data["results"])
         return aur.Package(**package)
