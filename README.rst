@@ -1,8 +1,3 @@
-.. image:: https://travis-ci.org/cdown/pyaur.png?branch=master
-    :target: https://travis-ci.org/cdown/pyaur
-.. image:: https://coveralls.io/repos/cdown/pyaur/badge.png?branch=master
-    :target: https://coveralls.io/r/cdown/pyaur?branch=master
-
 pyaur
 =====
 
@@ -27,14 +22,30 @@ that you can focus on using AUR data, not retrieving or parsing it.
 Installation
 ------------
 
-To install pyaur, simply run:
-
 ::
 
     $ pip install pyaur
 
+Testing
+_______
+
+.. image:: https://travis-ci.org/cdown/pyaur.png?branch=master
+    :target: https://travis-ci.org/cdown/pyaur
+.. image:: https://coveralls.io/repos/cdown/pyaur/badge.png?branch=master
+    :target: https://coveralls.io/r/cdown/pyaur?branch=master
+
+::
+
+    $ pip install nose
+    $ nosetests
+    ...........
+    ----------------------------------------------------------------------
+    Ran 11 tests in 6.720s
+
+    OK
+
 License
 -------
 
-pyaur is MIT licensed. See the `LICENSE file
+pyaur is MIT licensed. See `the LICENSE file
 <https://github.com/cdown/pyaur/blob/master/LICENSE>`__ for full details.
