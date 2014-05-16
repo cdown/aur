@@ -6,7 +6,6 @@ setup(
     name = "pyaur",
     version = "0.9.1",
     description = "Arch User Repository API library",
-    long_description = open("README.rst").read(),
     url = "https://github.com/cdown/pyaur/",
 
     author = "Chris Down",
