@@ -28,6 +28,6 @@ pyaur is a Python library that makes it easy to access and parse data from the
 
 ## License
 
-pyaur is [MIT licensed][mit]. See the LICENSE file for full details.
+pyaur is [ISC licensed][isc]. See the LICENSE file for full details.
 
-[mit]: http://en.wikipedia.org/wiki/MIT_license
+[isc]: http://en.wikipedia.org/wiki/ISC_license
