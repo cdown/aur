@@ -6,5 +6,6 @@ python:
     - "3.3"
 install:
     - "pip install --use-mirrors -r requirements.txt"
+    - "pip install --use-mirrors -r tests/requirements.txt"
 script:
     - "nosetests"
