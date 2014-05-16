@@ -6,8 +6,5 @@ python:
     - "3.3"
 install:
     - "pip install --use-mirrors -r requirements.txt"
-    - "pip install --use-mirrors coveralls"
 script:
-    - "nosetests --with-coverage --cover-package=aur"
-after_success:
-    - "coveralls"
+    - "nosetests"
