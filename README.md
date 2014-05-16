@@ -20,7 +20,7 @@ pyaur is a Python library that makes it easy to access and parse data from the
 
 [![Build status][travis-image]][travis-builds]
 
-    $ pip install nose
+    $ pip install -r tests/requirements.txt
     $ nosetests
 
 [travis-builds]: https://travis-ci.org/cdown/pyaur
