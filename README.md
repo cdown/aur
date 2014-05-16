@@ -23,8 +23,8 @@ pyaur is a Python library that makes it easy to access and parse data from the
     $ pip install nose
     $ nosetests
 
-[travis-builds]: https://travis-ci.org/cdown/gh-mirror
-[travis-image]: https://travis-ci.org/cdown/gh-mirror.png?branch=master
+[travis-builds]: https://travis-ci.org/cdown/pyaur
+[travis-image]: https://travis-ci.org/cdown/pyaur.png?branch=master
 
 ## License
 
