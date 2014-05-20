@@ -16,6 +16,15 @@ pyaur is a Python library that makes it easy to access and parse data from the
 
     $ pip install pyaur
 
+## Installing dependencies
+
+If you install by [pip][], these will be installed automatically, but
+otherwise:
+
+    $ pip install -r requirements.txt
+
+[pip]: https://pypi.python.org/pypi/pip
+
 ## Testing
 
 [![Build status][travis-image]][travis-builds]
