@@ -7,6 +7,10 @@ import aur
 yturl_category_id = aur.info("yturl").category_id
 
 
+def test_invalid_name():
+    assert aur.info("totally-not-a-package") is None
+
+
 def test_category_id_to_name():
     assert aur.utils.category_id_to_name(yturl_category_id) == "multimedia"
 

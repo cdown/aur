@@ -154,5 +154,7 @@ def _parse_single(res_data, query_type):
     """
     _api_error_check(res_data, query_type)
 
+    if res_data["results"] == []:
+        return None
     package = _decamelcase_output(res_data["results"])
     return aur.Package(**package)
