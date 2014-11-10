@@ -52,6 +52,7 @@ def multiinfo(packages):
     """
     return _generic_search(packages, "multiinfo", multi=True)
 
+
 def _decamelcase_output(api_data):
     """
     Decamelcase API output to conform to PEP8.
@@ -87,8 +88,6 @@ def _generic_search(query, query_type, multi=False):
     """
     res_data = _query_api(query, query_type, multi)
     return _parse_multi(res_data, query_type)
-
-
 
 
 def _query_api(query, query_type, multi=False):
