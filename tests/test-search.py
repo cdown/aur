@@ -13,25 +13,28 @@ def relative(path):
     return os.path.join(os.path.dirname(__file__), path)
 
 
+@patch('aur.requests.get')
 @raises(aur.exceptions.QueryTooShortError)
-def test_query_too_short():
-    with open(relative("samples/search/too-short")) as f:
-        res = json.load(f)
-        list(aur.query._parse_multi(res, "search"))
+def test_query_too_short(rq_mock):
+    with open(relative('samples/search/too-short')) as mock_f:
+        rq_mock.return_value = mock_f
+        list(aur.search('xxxxx'))
 
 
+@patch('aur.requests.get')
 @raises(aur.exceptions.UnknownAURError)
-def test_bogus_error():
-    with open(relative("samples/search/bogus-error")) as f:
-        res = json.load(f)
-        list(aur.query._parse_multi(res, "search"))
+def test_bogus_error(rq_mock):
+    with open(relative('samples/search/bogus-error')) as mock_f:
+        rq_mock.return_value = mock_f
+        list(aur.msearch('xxxxx'))
 
 
+@patch('aur.requests.get')
 @raises(aur.exceptions.UnexpectedResponseTypeError)
-def test_bogus_reply_type():
-    with open(relative("samples/search/unknown-type")) as f:
-        res = json.load(f)
-        list(aur.query._parse_multi(res, "search"))
+def test_bogus_reply_type(rq_mock):
+    with open(relative('samples/search/unknown-type')) as mock_f:
+        rq_mock.return_value = mock_f
+        list(aur.info('xxxxx'))
 
 @patch('aur.query._query_api')
 def test_search(qa_mock):
