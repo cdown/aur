@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name = "pyaur",
-    version = "0.9.1",
+    version = "0.9.2",
     description = "Arch User Repository API library",
     url = "https://github.com/cdown/pyaur/",
 
