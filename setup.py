@@ -16,13 +16,13 @@ with open('tests/requirements.txt') as test_requirements_f:
     TEST_REQUIREMENTS = test_requirements_f.readlines()
 
 setup(
-    name='pyaur',
+    name='aur',
     version='0.9.2',
     description='Arch User Repository API interface.',
     long_description=README,
     author='Chris Down',
     author_email='chris@chrisdown.name',
-    url='https://github.com/cdown/pyaur',
+    url='https://github.com/cdown/aur',
     packages=['aur'],
     license='ISC',
     zip_safe=False,
