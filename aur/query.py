@@ -103,12 +103,12 @@ def _query_api(query, query_type, multi=False):
         query_key += "[]"
 
     res_handle = requests.get(
-        "http://aur.archlinux.org/rpc.php?" + urlencode({
+        "https://aur.archlinux.org/rpc.php?" + urlencode({
             "type": query_type,
             query_key: query
         }, doseq=True)
     )
-    res_data = res_handle.json()
+    res_data = json.load(res_handle)
 
     return res_data
 
