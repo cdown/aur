@@ -7,9 +7,7 @@ install:
   - pip install --use-mirrors -r requirements.txt
   - pip install --use-mirrors -r tests/requirements.txt
   - pip install --use-mirrors coveralls
-  - pip install --use-mirrors pep8
 script:
   - nosetests --with-coverage --cover-package=aur
-  - pep8 aur
 after_success:
   - coveralls
