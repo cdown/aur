@@ -5,6 +5,7 @@ import aur.exceptions
 import json
 import requests
 import sys
+from datetime import datetime
 
 try:  # pragma: no cover
     from urllib.parse import urlencode
@@ -141,6 +142,11 @@ def _parse_multi(res_data, query_type):
 
     for package in res_data["results"]:
         package = _decamelcase_output(package)
+        package['first_submitted'] = \
+            datetime.utcfromtimestamp(package['first_submitted'])
+        package['last_modified'] = \
+            datetime.utcfromtimestamp(package['last_modified'])
+        package['out_of_date'] = bool(package['out_of_date'])
         yield aur.Package(**package)
 
 
@@ -154,4 +160,9 @@ def _parse_single(res_data, query_type):
     _api_error_check(res_data, query_type)
 
     package = _decamelcase_output(res_data["results"])
+    package['first_submitted'] = \
+        datetime.utcfromtimestamp(package['first_submitted'])
+    package['last_modified'] = \
+        datetime.utcfromtimestamp(package['last_modified'])
+    package['out_of_date'] = bool(package['out_of_date'])
     return aur.Package(**package)
