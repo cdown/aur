@@ -54,5 +54,5 @@ class Package(package_namedtuple):
 
     __slots__ = ()
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return '<%s: %r>' % (self.__class__.__name__, self.name)
