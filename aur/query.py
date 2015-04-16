@@ -109,9 +109,8 @@ def _query_api(query, query_type, multi=False):
             query_key: query
         }, doseq=True)
     )
-    res_data = json.load(res_handle)
 
-    return res_data
+    return res_handle.json()
 
 
 def _api_error_check(res_data, query_type):
