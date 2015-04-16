@@ -7,39 +7,39 @@ import json
 import os
 import sys
 from mock import patch
+import requests_mock
 
 
 def relative(path):
     return os.path.join(os.path.dirname(__file__), path)
 
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 @raises(aur.exceptions.QueryTooShortError)
 def test_query_too_short(rq_mock):
     with open(relative('samples/search/too-short')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
         list(aur.search('xxxxx'))
 
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 @raises(aur.exceptions.UnknownAURError)
 def test_bogus_error(rq_mock):
     with open(relative('samples/search/bogus-error')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
         list(aur.msearch('xxxxx'))
 
-
-@patch('aur.requests.get')
+@requests_mock.mock()
 @raises(aur.exceptions.UnexpectedResponseTypeError)
 def test_bogus_reply_type(rq_mock):
     with open(relative('samples/search/unknown-type')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
         aur.info('xxxxx')
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 def test_search(rq_mock):
     with open(relative('samples/search/search')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
 
         results = list(aur.search('yturl'))
 
@@ -81,10 +81,10 @@ def test_search(rq_mock):
             }
         )
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 def test_msearch(rq_mock):
     with open(relative('samples/search/msearch')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
 
         results = list(aur.msearch('cdown'))
 
@@ -126,10 +126,10 @@ def test_msearch(rq_mock):
             }
         )
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 def test_info(rq_mock):
     with open(relative('samples/search/info')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
 
         result = aur.info('cdown')
 
@@ -152,10 +152,10 @@ def test_info(rq_mock):
             }
         )
 
-@patch('aur.requests.get')
+@requests_mock.mock()
 def test_multiinfo(rq_mock):
     with open(relative('samples/search/multiinfo')) as mock_f:
-        rq_mock.return_value = mock_f
+        rq_mock.get(requests_mock.ANY, text=mock_f.read())
 
         results = list(aur.multiinfo('cdown'))
 
