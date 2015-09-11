@@ -1,16 +1,70 @@
-#!/usr/bin/env python
-
-import aur
-import aur.exceptions
-import json
 import requests
-import sys
 from datetime import datetime
+from collections import namedtuple
 
 try:  # pragma: no cover
     from urllib.parse import urlencode
 except ImportError:  # pragma: no cover
     from urllib import urlencode
+
+
+CATEGORIES = [
+    None, None, "daemons", "devel", "editors", "emulators", "games", "gnome",
+    "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
+    "science", "system", "x11", "xfce", "kernels",
+]
+
+
+class QueryTooShortError(Exception): exit_code = 2
+class UnknownAURError(Exception): exit_code = 3
+class UnexpectedResponseTypeError(Exception): exit_code = 4
+class UnknownPackageError(Exception): exit_code = 5
+class InvalidCategoryIDError(Exception): exit_code = 6
+class InvalidCategoryNameError(Exception): exit_code = 7
+
+
+PackageBase = namedtuple(
+    'Package',
+    [
+        'num_votes', 'description', 'url_path', 'last_modified', 'name',
+        'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
+        'category_id', 'license', 'url',
+    ],
+)
+
+
+class Package(PackageBase):
+    __slots__ = ()
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.name)
+
+
+def category_id_to_name(category_id):
+    """
+    Convert a category ID to a category name.
+
+    :param category_id: the category ID to convert
+    :returns: the associated category name
+    """
+
+    try:
+        return CATEGORIES[category_id]
+    except IndexError:
+        raise InvalidCategoryIDError(category_id)
+
+
+def category_name_to_id(category_name):
+    """
+    Convert a category name to a category ID.
+
+    :param category_name: the category name to convert
+    :returns: the associated category ID
+    """
+
+    try:
+        return CATEGORIES.index(category_name)
+    except ValueError:
+        raise InvalidCategoryNameError(category_name)
 
 
 def search(package):
@@ -122,11 +176,11 @@ def _api_error_check(res_data, query_type):
     """
     if res_data["type"] == "error":
         if res_data["results"] == "Query arg too small":
-            raise aur.exceptions.QueryTooShortError
+            raise QueryTooShortError
         else:
-            raise aur.exceptions.UnknownAURError(res_data["results"])
+            raise UnknownAURError(res_data["results"])
     elif res_data["type"] != query_type:
-        raise aur.exceptions.UnexpectedResponseTypeError(res_data["type"])
+        raise UnexpectedResponseTypeError(res_data["type"])
 
 
 def _parse_multi(res_data, query_type):
@@ -146,7 +200,7 @@ def _parse_multi(res_data, query_type):
         package['last_modified'] = \
             datetime.utcfromtimestamp(package['last_modified'])
         package['out_of_date'] = bool(package['out_of_date'])
-        yield aur.Package(**package)
+        yield Package(**package)
 
 
 def _parse_single(res_data, query_type):
@@ -164,4 +218,4 @@ def _parse_single(res_data, query_type):
     package['last_modified'] = \
         datetime.utcfromtimestamp(package['last_modified'])
     package['out_of_date'] = bool(package['out_of_date'])
-    return aur.Package(**package)
+    return Package(**package)

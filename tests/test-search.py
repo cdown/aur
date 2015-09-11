@@ -3,10 +3,7 @@
 from nose.tools import raises, eq_ as eq
 import datetime
 import aur
-import json
 import os
-import sys
-from mock import patch
 import requests_mock
 
 
@@ -15,7 +12,7 @@ def relative(path):
 
 
 @requests_mock.mock()
-@raises(aur.exceptions.QueryTooShortError)
+@raises(aur.QueryTooShortError)
 def test_query_too_short(rq_mock):
     with open(relative('samples/search/too-short')) as mock_f:
         rq_mock.get(requests_mock.ANY, text=mock_f.read())
@@ -23,14 +20,14 @@ def test_query_too_short(rq_mock):
 
 
 @requests_mock.mock()
-@raises(aur.exceptions.UnknownAURError)
+@raises(aur.UnknownAURError)
 def test_bogus_error(rq_mock):
     with open(relative('samples/search/bogus-error')) as mock_f:
         rq_mock.get(requests_mock.ANY, text=mock_f.read())
         list(aur.msearch('xxxxx'))
 
 @requests_mock.mock()
-@raises(aur.exceptions.UnexpectedResponseTypeError)
+@raises(aur.UnexpectedResponseTypeError)
 def test_bogus_reply_type(rq_mock):
     with open(relative('samples/search/unknown-type')) as mock_f:
         rq_mock.get(requests_mock.ANY, text=mock_f.read())
