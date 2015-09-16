@@ -58,11 +58,11 @@ def category_name_to_id(category_name):
 
 
 def search(package):
-    return generic_api_query(package, "search")
+    return query_api(package, "search")
 
 
 def msearch(user):
-    return generic_api_query(user, "msearch")
+    return query_api(user, "msearch")
 
 
 def info(package):
@@ -73,7 +73,7 @@ def info(package):
 
 
 def multiinfo(packages):
-    return generic_api_query(packages, "multiinfo", multi=True)
+    return query_api(packages, "multiinfo", multi=True)
 
 
 def decamelcase_output(api_data):
@@ -84,19 +84,6 @@ def decamelcase_output(api_data):
         inflection.underscore(camelcased): api_value for camelcased, api_value
         in api_data.items()
     }
-
-
-def generic_api_query(query, query_type, multi=False):
-    '''
-    Perform a generic search query.
-
-    If `multi`, we will name all `arg` arguments as `arg[]`, in accordance with
-    the API spec for multiget operations.
-    '''
-    res_data = query_api(query, query_type, multi)
-    for package in res_data['results']:
-        print(package)
-        yield sanitise_package_info(package)
 
 
 def query_api(query, query_type, multi=False):
@@ -120,7 +107,10 @@ def query_api(query, query_type, multi=False):
 
     res_data = res_handle.json()
     api_error_check(res_data)
-    return res_data
+
+    for package in res_data['results']:
+        print(package)
+        yield sanitise_package_info(package)
 
 
 def api_error_check(res_data):
