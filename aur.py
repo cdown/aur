@@ -59,23 +59,23 @@ def category_name_to_id(category_name):
 
 
 def search(package):
-    return _generic_search(package, "search")
+    return generic_search(package, "search")
 
 
 def msearch(user):
-    return _generic_search(user, "msearch")
+    return generic_search(user, "msearch")
 
 
 def info(package):
-    res_data = _query_api(package, "info")
-    return _parse_single(res_data, "info")
+    res_data = query_api(package, "info")
+    return parse_single(res_data, "info")
 
 
 def multiinfo(packages):
-    return _generic_search(packages, "multiinfo", multi=True)
+    return generic_search(packages, "multiinfo", multi=True)
 
 
-def _decamelcase_output(api_data):
+def decamelcase_output(api_data):
     '''
     Decamelcase API result keys, for example OutOfDate becomes out_of_date.
     '''
@@ -85,18 +85,18 @@ def _decamelcase_output(api_data):
     }
 
 
-def _generic_search(query, query_type, multi=False):
+def generic_search(query, query_type, multi=False):
     '''
     Perform a generic search query.
 
     If `multi`, we will name all `arg` arguments as `arg[]`, in accordance with
     the API spec for multiget operations.
     '''
-    res_data = _query_api(query, query_type, multi)
-    return _parse_multi(res_data, query_type)
+    res_data = query_api(query, query_type, multi)
+    return parse_multi(res_data, query_type)
 
 
-def _query_api(query, query_type, multi=False):
+def query_api(query, query_type, multi=False):
     """
     Perform a single query on the AUR API.
 
@@ -118,7 +118,7 @@ def _query_api(query, query_type, multi=False):
     return res_handle.json()
 
 
-def _api_error_check(res_data, query_type):
+def api_error_check(res_data, query_type):
     """
     Perform error checking on API data.
 
@@ -134,7 +134,7 @@ def _api_error_check(res_data, query_type):
         raise UnexpectedResponseTypeError(res_data["type"])
 
 
-def _parse_multi(res_data, query_type):
+def parse_multi(res_data, query_type):
     """
     Parse the results of a package search.
 
@@ -142,20 +142,20 @@ def _parse_multi(res_data, query_type):
     :param query_type: the type of query made to get the response
     :returns: the packages for this query as Package objects
     """
-    _api_error_check(res_data, query_type)
+    api_error_check(res_data, query_type)
 
     for package in res_data["results"]:
         yield sanitise_package_info(package)
 
 
-def _parse_single(res_data, query_type):
+def parse_single(res_data, query_type):
     """
     Parse the results of a package info search.
 
     :param res_data: an AUR response
     :returns: the package for this query as a Package object
     """
-    _api_error_check(res_data, query_type)
+    api_error_check(res_data, query_type)
     return sanitise_package_info(res_data['results'])
 
 
@@ -164,7 +164,7 @@ def sanitise_package_info(raw_package_info):
     Sanitise package metadata, setting types appropriately, and decamelcasing
     API keys.
     '''
-    pkg = _decamelcase_output(raw_package_info)
+    pkg = decamelcase_output(raw_package_info)
 
     for date_key in ('first_submitted', 'last_modified'):
         pkg[date_key] = datetime.utcfromtimestamp(pkg[date_key])
