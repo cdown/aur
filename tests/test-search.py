@@ -56,7 +56,9 @@ def test_search(rq_mock):
                 'license': ' MIT ',
                 'maintainer': 'cdown',
                 'url': 'http://github.com/cdown/yturl',
-                'num_votes': 11
+                'num_votes': 11,
+                'package_base': 'yturl-git',
+                'package_base_id': 59216,
             }
         )
         eq(
@@ -74,7 +76,9 @@ def test_search(rq_mock):
                 'name': 'yturl',
                 'first_submitted': datetime.datetime(2013, 4, 8, 13, 16, 36),
                 'category_id': 12,
-                'last_modified': datetime.datetime(2014, 3, 12, 4, 33, 59)
+                'last_modified': datetime.datetime(2014, 3, 12, 4, 33, 59),
+                'package_base': 'yturl',
+                'package_base_id': 68930,
             }
         )
 
@@ -101,7 +105,9 @@ def test_msearch(rq_mock):
                 'last_modified': datetime.datetime(2014, 3, 12, 4, 34, 28),
                 'maintainer': 'cdown',
                 'license': ' MIT ',
-                'url_path': '/packages/yt/yturl-git/yturl-git.tar.gz'
+                'url_path': '/packages/yt/yturl-git/yturl-git.tar.gz',
+                'package_base': 'yturl-git',
+                'package_base_id': 59216,
             }
         )
         eq(
@@ -119,7 +125,9 @@ def test_msearch(rq_mock):
                 'out_of_date': False,
                 'version': '1.16-1',
                 'category_id': 12,
-                'first_submitted': datetime.datetime(2013, 4, 8, 13, 16, 36)
+                'first_submitted': datetime.datetime(2013, 4, 8, 13, 16, 36),
+                'package_base': 'yturl',
+                'package_base_id': 68930,
             }
         )
 
@@ -145,7 +153,9 @@ def test_info(rq_mock):
                 'license': ' MIT ',
                 'maintainer': 'cdown',
                 'url': 'http://github.com/cdown/yturl',
-                'num_votes': 1
+                'num_votes': 1,
+                'package_base': 'yturl',
+                'package_base_id': 68930,
             }
         )
 
@@ -172,7 +182,9 @@ def test_multiinfo(rq_mock):
                 'id': 7451,
                 'name': 'cups-mc2430dl',
                 'category_id': 14,
-                'maintainer': 'frigg'
+                'maintainer': 'frigg',
+                'package_base': 'cups-mc2430dl',
+                'package_base_id': 7451,
             },
         )
         eq(
@@ -190,6 +202,8 @@ def test_multiinfo(rq_mock):
                 'id': 153503,
                 'description': 'Drivers for various Xerox printers',
                 'num_votes': 21,
-                'last_modified': datetime.datetime(2015, 2, 19, 23, 35, 16)
+                'last_modified': datetime.datetime(2015, 2, 19, 23, 35, 16),
+                'package_base': 'cups-xerox',
+                'package_base_id': 6941,
             },
         )

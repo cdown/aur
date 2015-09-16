@@ -1,3 +1,4 @@
+import inflection
 import requests
 from datetime import datetime
 from collections import namedtuple
@@ -28,7 +29,7 @@ PackageBase = namedtuple(
     [
         'num_votes', 'description', 'url_path', 'last_modified', 'name',
         'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
-        'category_id', 'license', 'url',
+        'category_id', 'license', 'url', 'package_base', 'package_base_id',
     ],
 )
 
@@ -116,19 +117,8 @@ def _decamelcase_output(api_data):
     :returns: decamelcased API output
     """
     return {
-        "num_votes":       api_data["NumVotes"],
-        "description":     api_data["Description"],
-        "url_path":        api_data["URLPath"],
-        "last_modified":   api_data["LastModified"],
-        "name":            api_data["Name"],
-        "out_of_date":     api_data["OutOfDate"],
-        "id":              api_data["ID"],
-        "first_submitted": api_data["FirstSubmitted"],
-        "maintainer":      api_data["Maintainer"],
-        "version":         api_data["Version"],
-        "category_id":     api_data["CategoryID"],
-        "license":         api_data["License"],
-        "url":             api_data["URL"],
+        inflection.underscore(camelcased): api_value for camelcased, api_value
+        in api_data.items()
     }
 
 
