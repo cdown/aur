@@ -58,11 +58,11 @@ def category_name_to_id(category_name):
 
 
 def search(package):
-    return generic_search(package, "search")
+    return generic_api_query(package, "search")
 
 
 def msearch(user):
-    return generic_search(user, "msearch")
+    return generic_api_query(user, "msearch")
 
 
 def info(package):
@@ -73,7 +73,7 @@ def info(package):
 
 
 def multiinfo(packages):
-    return generic_search(packages, "multiinfo", multi=True)
+    return generic_api_query(packages, "multiinfo", multi=True)
 
 
 def decamelcase_output(api_data):
@@ -86,7 +86,7 @@ def decamelcase_output(api_data):
     }
 
 
-def generic_search(query, query_type, multi=False):
+def generic_api_query(query, query_type, multi=False):
     '''
     Perform a generic search query.
 
