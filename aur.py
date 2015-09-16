@@ -145,13 +145,7 @@ def _parse_multi(res_data, query_type):
     _api_error_check(res_data, query_type)
 
     for package in res_data["results"]:
-        package = _decamelcase_output(package)
-        package['first_submitted'] = \
-            datetime.utcfromtimestamp(package['first_submitted'])
-        package['last_modified'] = \
-            datetime.utcfromtimestamp(package['last_modified'])
-        package['out_of_date'] = bool(package['out_of_date'])
-        yield Package(**package)
+        yield sanitise_package_info(package)
 
 
 def _parse_single(res_data, query_type):
@@ -162,11 +156,18 @@ def _parse_single(res_data, query_type):
     :returns: the package for this query as a Package object
     """
     _api_error_check(res_data, query_type)
+    return sanitise_package_info(res_data['results'])
 
-    package = _decamelcase_output(res_data["results"])
-    package['first_submitted'] = \
-        datetime.utcfromtimestamp(package['first_submitted'])
-    package['last_modified'] = \
-        datetime.utcfromtimestamp(package['last_modified'])
-    package['out_of_date'] = bool(package['out_of_date'])
-    return Package(**package)
+
+def sanitise_package_info(raw_package_info):
+    '''
+    Sanitise package metadata, setting types appropriately, and decamelcasing
+    API keys.
+    '''
+    pkg = _decamelcase_output(raw_package_info)
+
+    for date_key in ('first_submitted', 'last_modified'):
+        pkg[date_key] = datetime.utcfromtimestamp(pkg[date_key])
+    pkg['out_of_date'] = bool(pkg['out_of_date'])
+
+    return Package(**pkg)
