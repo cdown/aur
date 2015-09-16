@@ -68,7 +68,7 @@ def msearch(user):
 
 def info(package):
     res_data = query_api(package, "info")
-    return parse_single(res_data, "info")
+    return parse_single(res_data)
 
 
 def multiinfo(packages):
@@ -93,7 +93,7 @@ def generic_search(query, query_type, multi=False):
     the API spec for multiget operations.
     '''
     res_data = query_api(query, query_type, multi)
-    return parse_multi(res_data, query_type)
+    return parse_multi(res_data)
 
 
 def query_api(query, query_type, multi=False):
@@ -115,7 +115,9 @@ def query_api(query, query_type, multi=False):
         }, doseq=True)
     )
 
-    return res_handle.json()
+    res_data = res_handle.json()
+    api_error_check(res_data, query_type)
+    return res_data
 
 
 def api_error_check(res_data, query_type):
@@ -134,7 +136,7 @@ def api_error_check(res_data, query_type):
         raise UnexpectedResponseTypeError(res_data["type"])
 
 
-def parse_multi(res_data, query_type):
+def parse_multi(res_data):
     """
     Parse the results of a package search.
 
@@ -142,20 +144,17 @@ def parse_multi(res_data, query_type):
     :param query_type: the type of query made to get the response
     :returns: the packages for this query as Package objects
     """
-    api_error_check(res_data, query_type)
-
     for package in res_data["results"]:
         yield sanitise_package_info(package)
 
 
-def parse_single(res_data, query_type):
+def parse_single(res_data):
     """
     Parse the results of a package info search.
 
     :param res_data: an AUR response
     :returns: the package for this query as a Package object
     """
-    api_error_check(res_data, query_type)
     return sanitise_package_info(res_data['results'])
 
 
