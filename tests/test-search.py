@@ -26,12 +26,6 @@ def test_bogus_error(rq_mock):
         rq_mock.get(requests_mock.ANY, text=mock_f.read())
         list(aur.msearch('xxxxx'))
 
-@requests_mock.mock()
-@raises(aur.UnexpectedResponseTypeError)
-def test_bogus_reply_type(rq_mock):
-    with open(relative('samples/search/unknown-type')) as mock_f:
-        rq_mock.get(requests_mock.ANY, text=mock_f.read())
-        aur.info('xxxxx')
 
 @requests_mock.mock()
 def test_search(rq_mock):
@@ -133,7 +127,7 @@ def test_msearch(rq_mock):
 
 @requests_mock.mock()
 def test_info(rq_mock):
-    with open(relative('samples/search/info')) as mock_f:
+    with open(relative('samples/search/multiinfo')) as mock_f:
         rq_mock.get(requests_mock.ANY, text=mock_f.read())
 
         result = aur.info('cdown')
@@ -141,22 +135,22 @@ def test_info(rq_mock):
         eq(
             result.__dict__,
             {
-                'url_path': '/packages/yt/yturl/yturl.tar.gz',
-                'first_submitted': datetime.datetime(2013, 4, 8, 13, 16, 36),
-                'id': 68930,
-                'name': 'yturl',
-                'category_id': 12,
-                'version': '1.16-1',
-                'last_modified': datetime.datetime(2014, 3, 12, 4, 33, 59),
+                'version': '1.6.0-2',
+                'first_submitted': datetime.datetime(2006, 11, 8, 7, 37, 11),
+                'description': 'CUPS driver for Konica Minolta magicolor 2430 Desklaser printer',
+                'url_path': '/packages/cu/cups-mc2430dl/cups-mc2430dl.tar.gz',
+                'num_votes': 3,
+                'url': 'http://konicaminolta.com/',
                 'out_of_date': False,
-                'description': 'Print direct URLs to YouTube videos.',
-                'license': ' MIT ',
-                'maintainer': 'cdown',
-                'url': 'http://github.com/cdown/yturl',
-                'num_votes': 1,
-                'package_base': 'yturl',
-                'package_base_id': 68930,
-            }
+                'license': 'GPL',
+                'last_modified': datetime.datetime(2012, 8, 7, 15, 41, 13),
+                'id': 7451,
+                'name': 'cups-mc2430dl',
+                'category_id': 14,
+                'maintainer': 'frigg',
+                'package_base': 'cups-mc2430dl',
+                'package_base_id': 7451,
+            },
         )
 
 @requests_mock.mock()

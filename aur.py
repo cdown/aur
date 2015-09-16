@@ -18,7 +18,6 @@ CATEGORIES = [
 
 class QueryTooShortError(Exception): exit_code = 2
 class UnknownAURError(Exception): exit_code = 3
-class UnexpectedResponseTypeError(Exception): exit_code = 4
 class UnknownPackageError(Exception): exit_code = 5
 class InvalidCategoryIDError(Exception): exit_code = 6
 class InvalidCategoryNameError(Exception): exit_code = 7
@@ -67,8 +66,10 @@ def msearch(user):
 
 
 def info(package):
-    res_data = query_api(package, "info")
-    return sanitise_package_info(res_data['results'])
+    package_multi = list(multiinfo([package]))
+    if package_multi:
+        package = package_multi[0]
+        return package
 
 
 def multiinfo(packages):
@@ -93,7 +94,8 @@ def generic_search(query, query_type, multi=False):
     the API spec for multiget operations.
     '''
     res_data = query_api(query, query_type, multi)
-    for package in res_data["results"]:
+    for package in res_data['results']:
+        print(package)
         yield sanitise_package_info(package)
 
 
@@ -117,11 +119,11 @@ def query_api(query, query_type, multi=False):
     )
 
     res_data = res_handle.json()
-    api_error_check(res_data, query_type)
+    api_error_check(res_data)
     return res_data
 
 
-def api_error_check(res_data, query_type):
+def api_error_check(res_data):
     """
     Perform error checking on API data.
 
@@ -133,8 +135,6 @@ def api_error_check(res_data, query_type):
             raise QueryTooShortError
         else:
             raise UnknownAURError(res_data["results"])
-    elif res_data["type"] != query_type:
-        raise UnexpectedResponseTypeError(res_data["type"])
 
 
 def sanitise_package_info(raw_package_info):
