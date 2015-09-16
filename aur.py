@@ -41,13 +41,10 @@ class Package(PackageBase):
 
 
 def category_id_to_name(category_id):
-    """
-    Convert a category ID to a category name.
-
-    :param category_id: the category ID to convert
-    :returns: the associated category name
-    """
-
+    '''
+    Convert a category ID (that the API returns) into a category name (that
+    would make sense to a human).
+    '''
     try:
         return CATEGORIES[category_id]
     except IndexError:
@@ -55,13 +52,6 @@ def category_id_to_name(category_id):
 
 
 def category_name_to_id(category_name):
-    """
-    Convert a category name to a category ID.
-
-    :param category_name: the category name to convert
-    :returns: the associated category ID
-    """
-
     try:
         return CATEGORIES.index(category_name)
     except ValueError:
@@ -69,53 +59,26 @@ def category_name_to_id(category_name):
 
 
 def search(package):
-    """
-    Perform a search on the AUR API.
-
-    :param package: the package name to search for
-    :returns: API response for this query
-    """
     return _generic_search(package, "search")
 
 
 def msearch(user):
-    """
-    Perform a maintainer package search on the AUR API.
-
-    :param user: the user to search for
-    :returns: API response for this query
-    """
     return _generic_search(user, "msearch")
 
 
 def info(package):
-    """
-    Perform an info search on the AUR API.
-
-    :param package: the package to get information about
-    :returns: API response for this query
-    """
     res_data = _query_api(package, "info")
     return _parse_single(res_data, "info")
 
 
 def multiinfo(packages):
-    """
-    Perform a multiinfo search on the AUR API.
-
-    :param packages: the packages to get information about
-    :returns: API response for this query
-    """
     return _generic_search(packages, "multiinfo", multi=True)
 
 
 def _decamelcase_output(api_data):
-    """
-    Decamelcase API output to conform to PEP8.
-
-    :param api_data: API output data
-    :returns: decamelcased API output
-    """
+    '''
+    Decamelcase API result keys, for example OutOfDate becomes out_of_date.
+    '''
     return {
         inflection.underscore(camelcased): api_value for camelcased, api_value
         in api_data.items()
@@ -123,14 +86,12 @@ def _decamelcase_output(api_data):
 
 
 def _generic_search(query, query_type, multi=False):
-    """
+    '''
     Perform a generic search query.
 
-    :param query: the query to make
-    :param query_type: the type of query to make
-    :param multi: whether this query accepts multiple inputs
-    :returns: API response for this query
-    """
+    If `multi`, we will name all `arg` arguments as `arg[]`, in accordance with
+    the API spec for multiget operations.
+    '''
     res_data = _query_api(query, query_type, multi)
     return _parse_multi(res_data, query_type)
 
