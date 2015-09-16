@@ -9,11 +9,13 @@ except ImportError:  # Python 2 fallback
     from urllib import urlencode
 
 
-CATEGORIES = [
+# A map of category id (list index) to category name mappings. See
+# category_id_to_name and category_name_to_id.
+CATEGORIES = (
     None, None, "daemons", "devel", "editors", "emulators", "games", "gnome",
     "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
     "science", "system", "x11", "xfce", "kernels",
-]
+)
 
 
 class QueryTooShortError(Exception): exit_code = 2
@@ -39,6 +41,24 @@ class Package(PackageBase):
         return '<%s: %s>' % (type(self).__name__, self.name)
 
 
+# Extremely simple API calls that don't do anything except call query_api
+def search(package): return query_api(package, 'search')
+def msearch(user): return query_api(user, 'msearch')
+def multiinfo(packages): return query_api(packages, 'multiinfo', multi=True)
+
+
+def info(package):
+    '''
+    Make an info query about a package. Internally uses multiinfo and gets the
+    first result. If no results were returned from multiinfo, implicitly
+    returns None.
+    '''
+    package_multi = list(multiinfo([package]))
+    if package_multi:
+        package = package_multi[0]
+        return package
+
+
 def category_id_to_name(category_id):
     '''
     Convert a category ID (that the API returns) into a category name (that
@@ -51,29 +71,14 @@ def category_id_to_name(category_id):
 
 
 def category_name_to_id(category_name):
+    '''
+    Convert a category name (that would make sense to a human) into a category
+    ID (that the API returns).
+    '''
     try:
         return CATEGORIES.index(category_name)
     except ValueError:
         raise InvalidCategoryNameError(category_name)
-
-
-def search(package):
-    return query_api(package, "search")
-
-
-def msearch(user):
-    return query_api(user, "msearch")
-
-
-def info(package):
-    package_multi = list(multiinfo([package]))
-    if package_multi:
-        package = package_multi[0]
-        return package
-
-
-def multiinfo(packages):
-    return query_api(packages, "multiinfo", multi=True)
 
 
 def decamelcase_output(api_data):
