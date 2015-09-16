@@ -3,9 +3,9 @@ import requests
 from datetime import datetime
 from collections import namedtuple
 
-try:  # pragma: no cover
+try:
     from urllib.parse import urlencode
-except ImportError:  # pragma: no cover
+except ImportError:  # Python 2 fallback
     from urllib import urlencode
 
 
