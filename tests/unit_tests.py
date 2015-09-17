@@ -8,7 +8,9 @@ import aur
 import httpretty
 import re
 from nose_parameterized import parameterized
-from nose.tools import eq_ as eq
+from nose.tools import eq_ as eq, assert_raises
+from hypothesis import given, assume
+from hypothesis.strategies import integers, sampled_from, text, one_of, none
 
 
 SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
@@ -57,3 +59,36 @@ def test_api_methods(test_file):
             got[key] = calendar.timegm(got[key].timetuple())
 
     eq(got, expected)
+
+
+@given(sampled_from(x for x in aur.CATEGORIES if x is not None))
+def test_category_name_to_id(category_name):
+    eq(
+        aur.category_name_to_id(category_name),
+        aur.CATEGORIES.index(category_name),
+    )
+
+
+@given(one_of(text(), none()))
+def test_category_name_to_id_unknown(bad_category_name):
+    # We use Nones to pad, so let them pass through
+    assume(
+        bad_category_name is None or bad_category_name not in aur.CATEGORIES
+    )
+    with assert_raises(aur.InvalidCategoryNameError):
+        aur.category_name_to_id(bad_category_name)
+
+
+@given(integers(min_value=2, max_value=len(aur.CATEGORIES) - 1))
+def test_category_id_to_name(category_id):
+    eq(
+        aur.category_id_to_name(category_id),
+        aur.CATEGORIES[category_id],
+    )
+
+
+@given(integers())
+def test_category_id_to_name_unknown(bad_category_id):
+    assume(bad_category_id < 2 or bad_category_id >= len(aur.CATEGORIES))
+    with assert_raises(aur.InvalidCategoryIDError):
+        aur.category_id_to_name(bad_category_id)
