@@ -127,13 +127,13 @@ def decamelcase_output(api_data):
 
 
 def query_api(query, query_type, multi=False):
-    """
-    Perform a single query on the AUR API.
+    '''
+    Perform a HTTP query against the AUR's API.
 
-    :param query: the search parameter(s)
-    :param query_type: the type of query to make
-    :param multi: whether this query accepts multiple inputs
-    """
+    If `multi` is passed, we will change the "arg" key into "arg[]", as that's
+    how the AUR API expects to recieve multiple values with the same key for
+    multiinfo requests.
+    '''
     query_key = "arg"
     if multi:
         query_key += "[]"
@@ -153,12 +153,10 @@ def query_api(query, query_type, multi=False):
 
 
 def api_error_check(res_data):
-    """
-    Perform error checking on API data.
-
-    :param res_data: an AUR response
-    :param query_type: the type of query made to get the response
-    """
+    '''
+    Perform error checking on API return data, raising distinct exception types
+    for different error conditions.
+    '''
     if res_data["type"] == "error":
         if res_data["results"] == "Query arg too small":
             raise QueryTooShortError
