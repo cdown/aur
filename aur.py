@@ -19,13 +19,13 @@ CATEGORIES = (
 )
 KEYS_TO_CONVERT_TO_DATETIMES = ('first_submitted', 'last_modified')
 
-
-class QueryTooShortError(Exception): exit_code = 2
-class UnknownAURError(Exception): exit_code = 3
-class UnknownPackageError(Exception): exit_code = 5
-class InvalidCategoryIDError(Exception): exit_code = 6
-class InvalidCategoryNameError(Exception): exit_code = 7
-class MissingPackageError(Exception): exit_code = 8
+class BaseAURError(Exception): exit_code = None
+class QueryTooShortError(BaseAURError): exit_code = 2
+class UnknownAURError(BaseAURError): exit_code = 3
+class UnknownPackageError(BaseAURError): exit_code = 5
+class InvalidCategoryIDError(BaseAURError): exit_code = 6
+class InvalidCategoryNameError(BaseAURError): exit_code = 7
+class MissingPackageError(BaseAURError): exit_code = 8
 
 
 PackageBase = namedtuple(
