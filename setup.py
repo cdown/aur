@@ -23,7 +23,7 @@ setup(
     author='Chris Down',
     author_email='chris@chrisdown.name',
     url='https://github.com/cdown/aur',
-    packages=['aur'],
+    py_modules=['aur'],
     license='ISC',
     zip_safe=False,
     keywords='aur arch linux',
