@@ -16,6 +16,7 @@ CATEGORIES = (
     "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
     "science", "system", "x11", "xfce", "kernels",
 )
+KEYS_TO_CONVERT_TO_DATETIMES = ('first_submitted', 'last_modified')
 
 
 class QueryTooShortError(Exception): exit_code = 2
@@ -139,7 +140,7 @@ def sanitise_package_info(raw_package_info):
     '''
     pkg = decamelcase_output(raw_package_info)
 
-    for date_key in ('first_submitted', 'last_modified'):
+    for date_key in KEYS_TO_CONVERT_TO_DATETIMES:
         pkg[date_key] = datetime.utcfromtimestamp(pkg[date_key])
     pkg['out_of_date'] = bool(pkg['out_of_date'])
 
