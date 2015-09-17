@@ -66,10 +66,19 @@ def category_id_to_name(category_id):
     Convert a category ID (that the API returns) into a category name (that
     would make sense to a human).
     '''
+    if category_id < 0:  # Don't allow list wrap-around
+        raise InvalidCategoryIDError(category_id)
+
     try:
-        return CATEGORIES[category_id]
+        category_name = CATEGORIES[category_id]
     except IndexError:
         raise InvalidCategoryIDError(category_id)
+
+    if category_name is None:
+        raise InvalidCategoryIDError(category_id)
+
+    return category_name
+
 
 
 def category_name_to_id(category_name):
@@ -77,6 +86,10 @@ def category_name_to_id(category_name):
     Convert a category name (that would make sense to a human) into a category
     ID (that the API returns).
     '''
+    # We pad the list with None, but trying to get its category makes no sense
+    if category_name is None:
+        raise InvalidCategoryNameError(category_name)
+
     try:
         return CATEGORIES.index(category_name)
     except ValueError:
