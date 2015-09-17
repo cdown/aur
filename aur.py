@@ -31,6 +31,7 @@ PackageBase = namedtuple(
         'num_votes', 'description', 'url_path', 'last_modified', 'name',
         'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
         'category_id', 'license', 'url', 'package_base', 'package_base_id',
+        'popularity',
     ],
 )
 
@@ -114,7 +115,6 @@ def query_api(query, query_type, multi=False):
     api_error_check(res_data)
 
     for package in res_data['results']:
-        print(package)
         yield sanitise_package_info(package)
 
 
