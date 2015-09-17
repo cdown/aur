@@ -10,7 +10,8 @@ except ImportError:  # Python 2 fallback
 
 
 # A map of category id (list index) to category name mappings. See
-# category_id_to_name and category_name_to_id.
+# category_id_to_name and category_name_to_id. "None" entries are just padding
+# since category ids start at 2, which is in this case represented by index 2.
 CATEGORIES = (
     None, None, "daemons", "devel", "editors", "emulators", "games", "gnome",
     "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
@@ -24,6 +25,7 @@ class UnknownAURError(Exception): exit_code = 3
 class UnknownPackageError(Exception): exit_code = 5
 class InvalidCategoryIDError(Exception): exit_code = 6
 class InvalidCategoryNameError(Exception): exit_code = 7
+class MissingPackageError(Exception): exit_code = 8
 
 
 PackageBase = namedtuple(
@@ -46,7 +48,26 @@ class Package(PackageBase):
 # Extremely simple API calls that don't do anything except call query_api
 def search(package): return query_api(package, 'search')
 def msearch(user): return query_api(user, 'msearch')
-def multiinfo(packages): return query_api(packages, 'multiinfo', multi=True)
+
+
+def multiinfo(requested_packages):
+    got_packages = list(query_api(requested_packages, 'multiinfo', multi=True))
+
+    # Check that all requests packages were retrieved. Since it's possible to
+    # specify the same thing twice through a name and an id in one request, we
+    # can't just check length.
+    for reqd_pkg in requested_packages:
+        for got_pkg in got_packages:
+            if reqd_pkg == got_pkg.name or reqd_pkg == got_pkg.id:
+                break
+        else:
+            raise MissingPackageError(
+                'Package %s missing in API response (got %r)' % (
+                    reqd_pkg, got_packages,
+                )
+            )
+
+    return got_packages
 
 
 def info(package):
@@ -56,9 +77,8 @@ def info(package):
     returns None.
     '''
     package_multi = list(multiinfo([package]))
-    if package_multi:
-        package = package_multi[0]
-        return package
+    package = package_multi[0]
+    return package
 
 
 def category_id_to_name(category_id):
