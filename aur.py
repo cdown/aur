@@ -167,7 +167,7 @@ def api_error_check(res_data):
     '''
     if res_data["type"] == "error":
         if res_data["results"] == "Query arg too small":
-            raise QueryTooShortError
+            raise QueryTooShortError(res_data['results'])
         else:
             raise UnknownAURError(res_data["results"])
 
