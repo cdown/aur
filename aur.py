@@ -73,8 +73,8 @@ def multiinfo(requested_packages):
 def info(package):
     '''
     Make an info query about a package. Internally uses multiinfo and gets the
-    first result. If no results were returned from multiinfo, implicitly
-    returns None.
+    first result. If no results were returned, an exception is raised from
+    within multiinfo.
     '''
     package_multi = list(multiinfo([package]))
     package = package_multi[0]
