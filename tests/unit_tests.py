@@ -10,7 +10,8 @@ import re
 from nose_parameterized import parameterized
 from nose.tools import eq_ as eq, assert_raises
 from hypothesis import given, assume
-from hypothesis.strategies import integers, sampled_from, text, one_of, none
+import testfixtures
+import hypothesis.strategies as st
 
 
 SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
@@ -69,7 +70,7 @@ def test_api_methods(test_file, should_raise_exc=None):
     eq(got, expected)
 
 
-@given(sampled_from(x for x in aur.CATEGORIES if x is not None))
+@given(st.sampled_from(x for x in aur.CATEGORIES if x is not None))
 def test_category_name_to_id(category_name):
     eq(
         aur.category_name_to_id(category_name),
@@ -77,7 +78,7 @@ def test_category_name_to_id(category_name):
     )
 
 
-@given(one_of(text(), none()))
+@given(st.one_of(st.text(), st.none()))
 def test_category_name_to_id_unknown(bad_category_name):
     # We use Nones to pad, so let them pass through
     assume(
@@ -87,7 +88,7 @@ def test_category_name_to_id_unknown(bad_category_name):
         aur.category_name_to_id(bad_category_name)
 
 
-@given(integers(min_value=2, max_value=len(aur.CATEGORIES) - 1))
+@given(st.integers(min_value=2, max_value=len(aur.CATEGORIES) - 1))
 def test_category_id_to_name(category_id):
     eq(
         aur.category_id_to_name(category_id),
@@ -95,8 +96,37 @@ def test_category_id_to_name(category_id):
     )
 
 
-@given(integers())
+@given(st.integers())
 def test_category_id_to_name_unknown(bad_category_id):
     assume(bad_category_id < 2 or bad_category_id >= len(aur.CATEGORIES))
     with assert_raises(aur.InvalidCategoryIDError):
         aur.category_id_to_name(bad_category_id)
+
+
+@given(st.lists(st.text(), min_size=1))
+def test_unknown_package_keys_are_removed_and_warn(unknown_package_keys):
+    known_package_keys = list(aur.Package._fields)
+    assume(not any(upk in known_package_keys for upk in unknown_package_keys))
+
+    with open(os.path.join(SAMPLE_DIR, 'search_found.api_response')) as api_f:
+        api_output = json.load(api_f)
+
+    raw_package = api_output['results'][0]
+
+    # Add bogus keys to trigger warning
+    for key in unknown_package_keys:
+        raw_package[key] = None
+
+    # If the keys were not successfully deleted, this will raise a TypeError
+    with testfixtures.LogCapture() as logs:
+        aur.sanitise_package_info(raw_package)
+
+    print(logs)
+    logs.check(
+        (
+            'aur', 'WARNING',
+            testfixtures.StringComparison(
+                'API returned unknown package metadata, removing:'
+            ),
+        )
+    )
