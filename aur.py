@@ -82,7 +82,7 @@ def info(package):
     first result. If no results were returned, an exception is raised from
     within multiinfo.
     '''
-    package_multi = list(multiinfo([package]))
+    package_multi = multiinfo([package])
     package = package_multi[0]
     return package
 
