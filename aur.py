@@ -181,7 +181,7 @@ def sanitise_package_info(raw_package_info):
 
     keys_to_rm = set(pkg) - set(Package._fields)
     if keys_to_rm:
-        log.warn(
+        log.warning(
             'API returned unknown package metadata, removing: %r', keys_to_rm,
         )
 
