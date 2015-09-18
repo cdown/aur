@@ -179,12 +179,14 @@ def sanitise_package_info(raw_package_info):
     '''
     pkg = decamelcase_output(raw_package_info)
 
-    for pkg_key in pkg:
-        if pkg_key not in Package._fields:
-            log.warn(
-                'API returned unknown package metadata, removing: %r', pkg_key,
-            )
-            del pkg[pkg_key]
+    keys_to_rm = set(pkg) - set(Package._fields)
+    if keys_to_rm:
+        log.warn(
+            'API returned unknown package metadata, removing: %r', keys_to_rm,
+        )
+
+    for key in keys_to_rm:
+        del pkg[key]
 
     for date_key in KEYS_TO_CONVERT_TO_DATETIMES:
         pkg[date_key] = datetime.utcfromtimestamp(pkg[date_key])
