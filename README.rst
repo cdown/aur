@@ -2,10 +2,6 @@
 aur
 ===
 
-.. image:: https://travis-ci.org/cdown/aur.svg?branch=develop
-  :target: https://travis-ci.org/cdown/aur
-  :alt: Test status
-
 aur is a Python library that makes it easy to access and parse data
 from the `Arch User Repository API`_.
 
@@ -41,6 +37,10 @@ Manually:
 
 Testing
 -------
+
+.. image:: https://travis-ci.org/cdown/aur.svg?branch=develop
+  :target: https://travis-ci.org/cdown/aur
+  :alt: Test status
 
 .. code::
 
