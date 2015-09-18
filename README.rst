@@ -12,12 +12,12 @@ Usage
 
 .. code:: python
 
-    >>> import aur
-    >>> list(aur.search("yturl"))
-    [<Package: 'yturl-git'>, <Package: 'yturl'>]
-    >>> package = aur.info("cower")
-    >>> package.description
-    'A simple AUR agent with a pretentious name'
+    >>> yturl = aur.info('yturl')
+    >>> yturl.description
+    'YouTube videos on the command line'
+    >>> poco = aur.search('poco')
+    >>> poco
+    [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
 
 Installation
 ------------
