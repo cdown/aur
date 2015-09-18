@@ -4,6 +4,7 @@ import calendar
 import json
 import types
 import os
+import mock
 import aur
 import httpretty
 import re
@@ -68,6 +69,17 @@ def test_api_methods(test_file, should_raise_exc=None):
             got[key] = calendar.timegm(got[key].timetuple())
 
     eq(got, expected)
+
+
+@given(st.text())
+def test_info(package):
+    # This test relies on the fact that info() doesn't actually care whether it
+    # has a real Package object or not. If that changes, it needs to be
+    # reevaluated.
+    with mock.patch('aur.multiinfo', return_value=[package]) as mi_mock:
+        got = aur.info(package)
+    mi_mock.assert_called_once_with([package])
+    eq(got, package)
 
 
 @given(st.sampled_from(x for x in aur.CATEGORIES if x is not None))
