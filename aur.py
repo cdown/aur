@@ -55,7 +55,7 @@ def msearch(user): return query_api(user, 'msearch')
 
 
 def multiinfo(requested_packages):
-    got_packages = list(query_api(requested_packages, 'multiinfo', multi=True))
+    got_packages = query_api(requested_packages, 'multiinfo', multi=True)
     log.debug('Requested: %r, Got: %r', requested_packages, got_packages)
 
     # Check that all requests packages were retrieved. Since it's possible to
@@ -155,9 +155,9 @@ def query_api(query, query_type, multi=False):
     res_data = res_handle.json()
     log.debug('API returned: %r', res_data)
     api_error_check(res_data)
+    raw_packages = res_data['results']
 
-    for package in res_data['results']:
-        yield sanitise_package_info(package)
+    return [sanitise_package_info(package) for package in raw_packages]
 
 
 def api_error_check(res_data):
