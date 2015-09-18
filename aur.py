@@ -2,11 +2,15 @@ import inflection
 import requests
 from datetime import datetime
 from collections import namedtuple
+import logging
 
 try:
     from urllib.parse import urlencode
 except ImportError:  # Python 2 fallback
     from urllib import urlencode
+
+
+log = logging.getLogger(__name__)
 
 
 # A map of category id (list index) to category name mappings. See
@@ -52,6 +56,7 @@ def msearch(user): return query_api(user, 'msearch')
 
 def multiinfo(requested_packages):
     got_packages = list(query_api(requested_packages, 'multiinfo', multi=True))
+    log.debug('Requested: %r, Got: %r', requested_packages, got_packages)
 
     # Check that all requests packages were retrieved. Since it's possible to
     # specify the same thing twice through a name and an id in one request, we
@@ -59,6 +64,7 @@ def multiinfo(requested_packages):
     for reqd_pkg in requested_packages:
         for got_pkg in got_packages:
             if reqd_pkg == got_pkg.name or reqd_pkg == got_pkg.id:
+                log.debug('Requested package %s matched %s', reqd_pkg, got_pkg)
                 break
         else:
             raise MissingPackageError(
@@ -134,6 +140,7 @@ def query_api(query, query_type, multi=False):
     how the AUR API expects to recieve multiple values with the same key for
     multiinfo requests.
     '''
+    log.debug('Making API query with query_type %s', query_type)
     query_key = "arg"
     if multi:
         query_key += "[]"
@@ -146,6 +153,7 @@ def query_api(query, query_type, multi=False):
     )
 
     res_data = res_handle.json()
+    log.debug('API returned: %r', res_data)
     api_error_check(res_data)
 
     for package in res_data['results']:
