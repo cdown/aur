@@ -1,6 +1,5 @@
 [
     {
-        "category_id": 1,
         "description": "Set the system timezone based on IP geolocation",
         "first_submitted": 1441577921,
         "id": 229275,
@@ -18,7 +17,6 @@
         "version": "0.4.0-2"
     },
     {
-        "category_id": 1,
         "description": "YouTube videos on the command line",
         "first_submitted": 1365426996,
         "id": 229289,
