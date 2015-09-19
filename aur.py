@@ -21,7 +21,15 @@ CATEGORIES = (
     "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
     "science", "system", "x11", "xfce", "kernels",
 )
-KEYS_TO_CONVERT_TO_DATETIMES = ('first_submitted', 'last_modified')
+
+# Type conversions to perform after getting API return data. For example,
+# first_submitted and last_modified are returned as epochs in the API response,
+# and they get converted into datetime objects before being passed to the
+# Package object.
+TYPE_CONVERSION_FUNCTIONS = {
+    datetime.utcfromtimestamp: ['first_submitted', 'last_modified'],
+    bool: ['out_of_date'],
+}
 
 class BaseAURError(Exception): exit_code = None
 class QueryTooShortError(BaseAURError): exit_code = 2
@@ -188,8 +196,8 @@ def sanitise_package_info(raw_package_info):
     for key in keys_to_rm:
         del pkg[key]
 
-    for date_key in KEYS_TO_CONVERT_TO_DATETIMES:
-        pkg[date_key] = datetime.utcfromtimestamp(pkg[date_key])
-    pkg['out_of_date'] = bool(pkg['out_of_date'])
+    for conversion_func, pkg_keys in TYPE_CONVERSION_FUNCTIONS.items():
+        for pkg_key in pkg_keys:
+            pkg[pkg_key] = conversion_func(pkg[pkg_key])
 
     return Package(**pkg)
