@@ -102,7 +102,7 @@ def _query_api(query, query_type, multi=False):
         if res_data["results"] == "Query arg too small":
             raise QueryTooShortError(res_data['results'])
         else:
-            raise UnknownAURError(res_data["results"])
+            raise APIError(res_data["results"])
 
     raw_packages = res_data['results']
 
@@ -142,13 +142,6 @@ def _raw_api_package_to_package(raw_package_info):
     return Package(**pkg)
 
 
-class BaseAURError(Exception): exit_code = None
-class QueryTooShortError(BaseAURError): exit_code = 2
-class UnknownAURError(BaseAURError): exit_code = 3
-class UnknownPackageError(BaseAURError): exit_code = 5
-class MissingPackageError(BaseAURError): exit_code = 8
-
-
 _Package = namedtuple(
     'Package',
     [
@@ -163,3 +156,9 @@ class Package(_Package):
     __slots__ = ()
     def __repr__(self):
         return '<%s: %s>' % (type(self).__name__, self.name)
+
+
+class AURError(Exception): pass
+class APIError(AURError): pass
+class QueryTooShortError(APIError): pass
+class MissingPackageError(AURError): pass
