@@ -60,13 +60,16 @@ def test_api_methods(test_file, should_raise_exc=None):
     else:
         got = vars(got)
 
-    for key in aur.KEYS_TO_CONVERT_TO_DATETIMES:
-        # We store these in JSON as epochs, so convert them here
-        if isinstance(got, list):
-            for package in got:
-                package[key] = calendar.timegm(package[key].timetuple())
+    # Since we can't store all data types in the JSON, we store them the same
+    # way the API would return them. Convert them back here.
+    for conversion_func, pkg_keys in aur.TYPE_CONVERSION_FUNCTIONS.items():
+        if isinstance(expected, list):
+            for package in expected:
+                for pkg_key in pkg_keys:
+                    package[pkg_key] = conversion_func(package[pkg_key])
         else:
-            got[key] = calendar.timegm(got[key].timetuple())
+            for pkg_key in pkg_keys:
+                expected[pkg_key] = conversion_func(expected[pkg_key])
 
     eq(got, expected)
 
