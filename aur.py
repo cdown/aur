@@ -59,7 +59,7 @@ def multiinfo(package_names_or_ids):
                 log.debug('Requested package %s matched %s', reqd_pkg, got_pkg)
                 break
         else:
-            raise MissingPackageError(
+            raise NoSuchPackageError(
                 'Package %s missing in API response (got %r)' % (
                     reqd_pkg, got_packages,
                 )
@@ -158,7 +158,25 @@ class Package(_Package):
         return '<%s: %s>' % (type(self).__name__, self.name)
 
 
-class AURError(Exception): pass
-class APIError(AURError): pass
-class QueryTooShortError(APIError): pass
-class MissingPackageError(AURError): pass
+class AURError(Exception):
+    '''The base class that all AUR exceptions inherit from.'''
+
+
+class APIError(AURError):
+    '''
+    Raised when we get a generic API error that we don't have a more specific
+    exception for.
+    '''
+
+class QueryTooShortError(APIError):
+    '''
+    Raised when the query entered was too short. Typically, most `aur.search`
+    queries must be at least 3 characters long.
+    '''
+
+class NoSuchPackageError(AURError):
+    '''
+    Raised when we explicitly requested a particular package as part of an
+    `aur.info` call, but we don't have any reference to it in the returned
+    data, which means that it doesn't exist.
+    '''

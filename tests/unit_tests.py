@@ -20,8 +20,8 @@ SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
     'msearch_found',
     'msearch_not_found',
     'multiinfo_found',
-    ('multiinfo_not_found', aur.MissingPackageError),
-    ('multiinfo_only_partial_found', aur.MissingPackageError),
+    ('multiinfo_not_found', aur.NoSuchPackageError),
+    ('multiinfo_only_partial_found', aur.NoSuchPackageError),
     'search_found',
     'search_not_found',
 ])
