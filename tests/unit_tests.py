@@ -84,39 +84,6 @@ def test_info(package):
     eq(got, package)
 
 
-@given(st.sampled_from(x for x in aur._CATEGORIES if x is not None))
-def test_category_name_to_id(category_name):
-    eq(
-        aur.category_name_to_id(category_name),
-        aur._CATEGORIES.index(category_name),
-    )
-
-
-@given(st.one_of(st.text(), st.none()))
-def test_category_name_to_id_unknown(bad_category_name):
-    # We use Nones to pad, so let them pass through
-    assume(
-        bad_category_name is None or bad_category_name not in aur._CATEGORIES
-    )
-    with assert_raises(aur.InvalidCategoryNameError):
-        aur.category_name_to_id(bad_category_name)
-
-
-@given(st.integers(min_value=2, max_value=len(aur._CATEGORIES) - 1))
-def test_category_id_to_name(category_id):
-    eq(
-        aur.category_id_to_name(category_id),
-        aur._CATEGORIES[category_id],
-    )
-
-
-@given(st.integers())
-def test_category_id_to_name_unknown(bad_category_id):
-    assume(bad_category_id < 2 or bad_category_id >= len(aur._CATEGORIES))
-    with assert_raises(aur.InvalidCategoryIDError):
-        aur.category_id_to_name(bad_category_id)
-
-
 @given(st.lists(st.text(), min_size=1))
 def test_unknown_package_keys_are_removed_and_warn(unknown_package_keys):
     known_package_keys = list(aur.Package._fields)
@@ -133,7 +100,7 @@ def test_unknown_package_keys_are_removed_and_warn(unknown_package_keys):
 
     # If the keys were not successfully deleted, this will raise a TypeError
     with testfixtures.LogCapture() as logs:
-        aur._sanitise_package_info(raw_package)
+        aur._raw_api_package_to_package(raw_package)
 
     print(logs)
     logs.check(

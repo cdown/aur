@@ -17,14 +17,6 @@ except ImportError:  # Python 2 fallback
 
 log = logging.getLogger(__name__)
 
-# A map of category id (list index) to category name mappings. See
-# category_id_to_name and category_name_to_id. "None" entries are just padding
-# since category ids start at 2, which is in this case represented by index 2.
-_CATEGORIES = (
-    None, None, "daemons", "devel", "editors", "emulators", "games", "gnome",
-    "i18n", "kde", "lib", "modules", "multimedia", "network", "office",
-    "science", "system", "x11", "xfce", "kernels",
-)
 
 # Type conversions to perform after getting API return data. For example,
 # first_submitted and last_modified are returned as epochs in the API response,
@@ -83,45 +75,6 @@ def info(package_name_or_id):
     return package
 
 
-def category_id_to_name(category_id):
-    '''
-    Convert a category ID (that the API returns) into a category name (that
-    would make sense to a human).
-
-    For example, category ID 2 maps to category name "daemons".
-    '''
-    if category_id < 0:  # Don't allow list wrap-around
-        raise InvalidCategoryIDError(category_id)
-
-    try:
-        category_name = _CATEGORIES[category_id]
-    except IndexError:
-        raise InvalidCategoryIDError(category_id)
-
-    if category_name is None:
-        raise InvalidCategoryIDError(category_id)
-
-    return category_name
-
-
-
-def category_name_to_id(category_name):
-    '''
-    Convert a category name (that would make sense to a human) into a category
-    ID (that the API returns).
-
-    For example, category name "daemons" maps to category ID 2.
-    '''
-    # We pad the list with None, but trying to get its category makes no sense
-    if category_name is None:
-        raise InvalidCategoryNameError(category_name)
-
-    try:
-        return _CATEGORIES.index(category_name)
-    except ValueError:
-        raise InvalidCategoryNameError(category_name)
-
-
 def _query_api(query, query_type, multi=False):
     '''
     Perform a HTTP query against the AUR's API.
@@ -153,7 +106,7 @@ def _query_api(query, query_type, multi=False):
 
     raw_packages = res_data['results']
 
-    return [_sanitise_package_info(package) for package in raw_packages]
+    return [_raw_api_package_to_package(package) for package in raw_packages]
 
 
 def _decamelcase_output(api_data):
@@ -166,7 +119,7 @@ def _decamelcase_output(api_data):
     }
 
 
-def _sanitise_package_info(raw_package_info):
+def _raw_api_package_to_package(raw_package_info):
     '''
     Sanitise package metadata, setting types appropriately, and decamelcasing
     API keys.
@@ -193,8 +146,6 @@ class BaseAURError(Exception): exit_code = None
 class QueryTooShortError(BaseAURError): exit_code = 2
 class UnknownAURError(BaseAURError): exit_code = 3
 class UnknownPackageError(BaseAURError): exit_code = 5
-class InvalidCategoryIDError(BaseAURError): exit_code = 6
-class InvalidCategoryNameError(BaseAURError): exit_code = 7
 class MissingPackageError(BaseAURError): exit_code = 8
 
 
@@ -203,8 +154,7 @@ _Package = namedtuple(
     [
         'num_votes', 'description', 'url_path', 'last_modified', 'name',
         'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
-        'category_id', 'license', 'url', 'package_base', 'package_base_id',
-        'popularity',
+        'license', 'url', 'package_base', 'package_base_id', 'popularity',
     ],
 )
 
