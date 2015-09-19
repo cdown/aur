@@ -35,6 +35,14 @@ Manually:
     python setup.py install
 
 
+Documentation
+-------------
+
+.. code::
+
+    pydoc aur
+
+
 Testing
 -------
 
