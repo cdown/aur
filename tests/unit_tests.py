@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import calendar
 import json
 import types
 import os
@@ -62,7 +61,7 @@ def test_api_methods(test_file, should_raise_exc=None):
 
     # Since we can't store all data types in the JSON, we store them the same
     # way the API would return them. Convert them back here.
-    for conversion_func, pkg_keys in aur.TYPE_CONVERSION_FUNCTIONS.items():
+    for conversion_func, pkg_keys in aur._TYPE_CONVERSION_FUNCTIONS.items():
         if isinstance(expected, list):
             for package in expected:
                 for pkg_key in pkg_keys:
@@ -85,11 +84,11 @@ def test_info(package):
     eq(got, package)
 
 
-@given(st.sampled_from(x for x in aur.CATEGORIES if x is not None))
+@given(st.sampled_from(x for x in aur._CATEGORIES if x is not None))
 def test_category_name_to_id(category_name):
     eq(
         aur.category_name_to_id(category_name),
-        aur.CATEGORIES.index(category_name),
+        aur._CATEGORIES.index(category_name),
     )
 
 
@@ -97,23 +96,23 @@ def test_category_name_to_id(category_name):
 def test_category_name_to_id_unknown(bad_category_name):
     # We use Nones to pad, so let them pass through
     assume(
-        bad_category_name is None or bad_category_name not in aur.CATEGORIES
+        bad_category_name is None or bad_category_name not in aur._CATEGORIES
     )
     with assert_raises(aur.InvalidCategoryNameError):
         aur.category_name_to_id(bad_category_name)
 
 
-@given(st.integers(min_value=2, max_value=len(aur.CATEGORIES) - 1))
+@given(st.integers(min_value=2, max_value=len(aur._CATEGORIES) - 1))
 def test_category_id_to_name(category_id):
     eq(
         aur.category_id_to_name(category_id),
-        aur.CATEGORIES[category_id],
+        aur._CATEGORIES[category_id],
     )
 
 
 @given(st.integers())
 def test_category_id_to_name_unknown(bad_category_id):
-    assume(bad_category_id < 2 or bad_category_id >= len(aur.CATEGORIES))
+    assume(bad_category_id < 2 or bad_category_id >= len(aur._CATEGORIES))
     with assert_raises(aur.InvalidCategoryIDError):
         aur.category_id_to_name(bad_category_id)
 
@@ -134,7 +133,7 @@ def test_unknown_package_keys_are_removed_and_warn(unknown_package_keys):
 
     # If the keys were not successfully deleted, this will raise a TypeError
     with testfixtures.LogCapture() as logs:
-        aur.sanitise_package_info(raw_package)
+        aur._sanitise_package_info(raw_package)
 
     print(logs)
     logs.check(
