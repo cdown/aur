@@ -195,7 +195,7 @@ class QueryTooShortError(APIError):
 
 class NoSuchPackageError(AURError):
     '''
-    Raised when we explicitly requested a particular package as part of an
-    :py:func:`info` call, but we don't have any reference to it in the returned
-    data, which means that it doesn't exist.
+    Raised when we explicitly requested a particular package, but we don't have
+    any reference to it in the returned data, which means that the requested
+    package doesn't exist.
     '''

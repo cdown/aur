@@ -1,3 +1,8 @@
+.. module:: aur
+
+`aur:` Python AUR interface
+===========================
+
 `aur` is a Python library that makes it easy to access and parse data from the
 `Arch User Repository API`_.
 
@@ -10,11 +15,11 @@ Core functions
 The AUR API has four query types. For each of these query types, `aur` exposes
 a function that calls the API with this query type.
 
-.. module:: aur
 .. autofunction:: info
 .. autofunction:: msearch
 .. autofunction:: multiinfo
 .. autofunction:: search
+
 
 The Package class
 -----------------
@@ -29,3 +34,19 @@ The Package class
     :exclude-members: count, index
 
     Here are all of the attributes available:
+
+
+Exceptions
+----------
+
+`aur` uses `requests`_ internally, so general HTTP(S) exceptions will come from
+there.
+
+There are also a number of more targeted exceptions defined in `aur` itself:
+
+.. autoexception:: AURError
+.. autoexception:: APIError
+.. autoexception:: QueryTooShortError
+.. autoexception:: NoSuchPackageError
+
+.. _requests: http://docs.python-requests.org
