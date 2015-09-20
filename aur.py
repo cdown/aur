@@ -1,6 +1,8 @@
 '''
 aur is a Python library that makes it easy to access and parse data from the
-[Arch User Repository API](https://wiki.archlinux.org/index.php/AurJson).
+`Arch User Repository API`_.
+
+.. _`Arch User Repository API`: https://wiki.archlinux.org/index.php/AurJson
 '''
 
 import inflection
@@ -30,22 +32,24 @@ _TYPE_CONVERSION_FUNCTIONS = {
 
 def search(package_name_substring):
     '''
-    Return `aur.Package`s where `package_name_substring` is a substring.
+    Return :py:class:`Package` objects where `package_name_substring` is a
+    substring.
     '''
     return _query_api(package_name_substring, 'search')
 
 
 def msearch(maintaining_user):
     '''
-    Return `aur.Package`s where the maintainer is `maintaining_user`.
+    Return :py:class:`Package` objects where the maintainer is
+    `maintaining_user`.
     '''
     return _query_api(maintaining_user, 'msearch')
 
 
 def multiinfo(package_names_or_ids):
     '''
-    Return `aur.Package`s matching the exact names or ids specified in
-    `package_names_or_ids`.
+    Return :py:class:`Package` objects matching the exact names or ids
+    specified in `package_names_or_ids`.
     '''
     got_packages = _query_api(package_names_or_ids, 'multiinfo', multi=True)
     log.debug('Requested: %r, Got: %r', package_names_or_ids, got_packages)
@@ -69,7 +73,9 @@ def multiinfo(package_names_or_ids):
 
 
 def info(package_name_or_id):
-    '''Return the `aur.Package` with the exact name `package_name_or_id`.'''
+    '''
+    Return the :py:class:`Package` with the exact name `package_name_or_id`.
+    '''
     package_multi = multiinfo([package_name_or_id])
     package = package_multi[0]
     return package
@@ -153,6 +159,18 @@ _Package = namedtuple(
 
 
 class Package(_Package):
+    '''
+    All package information retrieved from the API is stored in a
+    :class:`Package`, which is a :py:func:`collections.namedtuple` with some
+    extensions.
+
+    All information about the package is available as attributes with the same
+    name as those returned by the API for each package, except that each one is
+    `snake case`_ instead of `Pascal case`_.
+
+    .. _`snake case`: https://en.wikipedia.org/wiki/Snake_case
+    .. _`Pascal case`: http://c2.com/cgi/wiki?PascalCase
+    '''
     __slots__ = ()
     def __repr__(self):
         return '<%s: %s>' % (type(self).__name__, self.name)
@@ -170,13 +188,13 @@ class APIError(AURError):
 
 class QueryTooShortError(APIError):
     '''
-    Raised when the query entered was too short. Typically, most `aur.search`
-    queries must be at least 3 characters long.
+    Raised when the query entered was too short. Typically, most
+    :py:func:`search` queries must be at least 3 characters long.
     '''
 
 class NoSuchPackageError(AURError):
     '''
     Raised when we explicitly requested a particular package as part of an
-    `aur.info` call, but we don't have any reference to it in the returned
+    :py:func:`info` call, but we don't have any reference to it in the returned
     data, which means that it doesn't exist.
     '''
