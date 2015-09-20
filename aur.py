@@ -49,7 +49,7 @@ def msearch(maintaining_user):
 def multiinfo(package_names_or_ids):
     '''
     Return :py:class:`Package` objects matching the exact names or ids
-    specified in `package_names_or_ids`.
+    specified in the :term:`iterable` `package_names_or_ids`.
     '''
     got_packages = _query_api(package_names_or_ids, 'multiinfo', multi=True)
     log.debug('Requested: %r, Got: %r', package_names_or_ids, got_packages)
