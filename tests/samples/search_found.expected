@@ -1,5 +1,6 @@
 [
     {
+        "category_id": 1,
         "description": "C++ class libraries for network-centric, portable applications, complete edition with debug libraries",
         "first_submitted": 1193569357,
         "id": 189701,
@@ -17,6 +18,7 @@
         "version": "1.6.0-1"
     },
     {
+        "category_id": 1,
         "description": "A generator of arithmetic cores (Floating-Point Cores, but not only) for FPGAs (but not only)",
         "first_submitted": 1377118989,
         "id": 202080,
@@ -34,6 +36,7 @@
         "version": "2.5.0-1"
     },
     {
+        "category_id": 1,
         "description": "C++ class libraries for network-centric, portable applications, basic edition",
         "first_submitted": 1382130102,
         "id": 219477,
