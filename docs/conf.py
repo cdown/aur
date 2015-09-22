@@ -33,6 +33,11 @@ intersphinx_mapping = {
 autoclass_content = 'both'
 
 
+# These are only needed to not break ReadTheDocs
+latex_documents = man_pages = texinfo_documents = []
+
+
+# pylint: disable=unused-argument,too-many-arguments
 def no_namedtuple_attrib_docstring(app, what, name, obj, options, lines):
     if any('Alias for field number' in line for line in lines):
         # This is a namedtuple with a useless docstring, in-place purge all of
