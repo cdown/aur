@@ -24,6 +24,18 @@ a function that calls the API with this query type.
 The Package class
 -----------------
 
+Most functions in this library return :py:class:`Package` objects in some form.
+They essentially act as storage objects for all metadata related to a package.
+
+.. code:: python
+
+    >>> yturl = info('yturl')
+    >>> yturl.description
+    'YouTube videos on the command line'
+    >>> yturl.last_modified
+    datetime.datetime(2015, 9, 8, 22, 26, 24)
+    >>> yturl.out_of_date
+    False
 
 .. Unfortunately Sphinx's introspection fails to get the class signature here,
    presumably because _Package is being subclassed, so we need to do our own
