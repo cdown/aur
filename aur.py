@@ -34,6 +34,9 @@ def search(package_name_substring):
     '''
     Return :py:class:`Package` objects where `package_name_substring` is a
     substring.
+
+    >>> search('poco')
+    [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
     '''
     return _query_api(package_name_substring, 'search')
 
@@ -42,6 +45,9 @@ def msearch(maintaining_user):
     '''
     Return :py:class:`Package` objects where the maintainer is
     `maintaining_user`.
+
+    >>> msearch('cdown')
+    [<Package: mpdmenu>, <Package: tzupdate>, <Package: yturl>]
     '''
     return _query_api(maintaining_user, 'msearch')
 
@@ -53,6 +59,9 @@ def multiinfo(package_names_or_ids):
 
     Packages are returned in the form :code:`{package_name: package}` for easy
     access.
+
+    >>> multiinfo(['yturl', 'tzupdate'])
+    {'tzupdate': <Package: tzupdate>, 'yturl': <Package: yturl>}
     '''
     got_packages = _query_api(package_names_or_ids, 'multiinfo', multi=True)
     log.debug('Requested: %r, Got: %r', package_names_or_ids, got_packages)
@@ -78,6 +87,9 @@ def multiinfo(package_names_or_ids):
 def info(package_name_or_id):
     '''
     Return the :py:class:`Package` with the exact name `package_name_or_id`.
+
+    >>> info('linux-bfs')
+    <Package: linux-bfs>
     '''
     package_multi = multiinfo([package_name_or_id])
     _, package = package_multi.popitem()
