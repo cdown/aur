@@ -56,6 +56,8 @@ def test_api_methods(test_file, should_raise_exc=None):
     if isinstance(got, list) or isinstance(got, types.GeneratorType):
         # We need to compare the data, not the generator itself, so run it.
         got = [vars(package) for package in got]
+    elif isinstance(got, dict):
+        got = {pkg_name: vars(pkg) for pkg_name, pkg in got.items()}
     else:
         got = vars(got)
 
@@ -64,6 +66,10 @@ def test_api_methods(test_file, should_raise_exc=None):
     for conversion_func, pkg_keys in aur._TYPE_CONVERSION_FUNCTIONS.items():
         if isinstance(expected, list):
             for package in expected:
+                for pkg_key in pkg_keys:
+                    package[pkg_key] = conversion_func(package[pkg_key])
+        elif isinstance(expected, dict):
+            for _, package in expected.items():
                 for pkg_key in pkg_keys:
                     package[pkg_key] = conversion_func(package[pkg_key])
         else:
@@ -78,7 +84,9 @@ def test_info(package):
     # This test relies on the fact that info() doesn't actually care whether it
     # has a real Package object or not. If that changes, it needs to be
     # reevaluated.
-    with mock.patch('aur.multiinfo', return_value=[package]) as mi_mock:
+    #
+    # info() just uses .popitem(), so the package name key doesn't matter.
+    with mock.patch('aur.multiinfo', return_value={'_': package}) as mi_mock:
         got = aur.info(package)
     mi_mock.assert_called_once_with([package])
     eq(got, package)
