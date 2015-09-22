@@ -19,6 +19,14 @@ Usage
     >>> poco
     [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
 
+
+Documentation
+-------------
+
+Documentation is available on ReadTheDocs_.
+
+.. _ReadTheDocs: http://aur.readthedocs.org
+
 Installation
 ------------
 
