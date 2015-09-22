@@ -4,7 +4,7 @@ import os
 sys.path.insert(0, os.path.abspath('..'))
 
 project = 'aur'
-version = '0.9.2'
+version = '0.10.0'
 release = version
 
 # pylint: disable=redefined-builtin
@@ -34,8 +34,8 @@ autoclass_content = 'both'
 
 # For building PDFs on ReadTheDocs
 latex_documents = [
-  ('index', '%s.tex' % project, '%s documentation' % project,
-   copyright, 'manual'),
+    ('index', '%s.tex' % project, '%s documentation' % project,
+     copyright, 'manual'),
 ]
 
 
