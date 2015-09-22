@@ -50,6 +50,9 @@ def multiinfo(package_names_or_ids):
     '''
     Return :py:class:`Package` objects matching the exact names or ids
     specified in the :term:`iterable` `package_names_or_ids`.
+
+    Packages are returned in the form :code:`{package_name: package}` for easy
+    access.
     '''
     got_packages = _query_api(package_names_or_ids, 'multiinfo', multi=True)
     log.debug('Requested: %r, Got: %r', package_names_or_ids, got_packages)
@@ -69,7 +72,7 @@ def multiinfo(package_names_or_ids):
                 )
             )
 
-    return got_packages
+    return {package.name: package for package in got_packages}
 
 
 def info(package_name_or_id):
@@ -77,7 +80,7 @@ def info(package_name_or_id):
     Return the :py:class:`Package` with the exact name `package_name_or_id`.
     '''
     package_multi = multiinfo([package_name_or_id])
-    package = package_multi[0]
+    _, package = package_multi.popitem()
     return package
 
 

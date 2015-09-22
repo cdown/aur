@@ -1,5 +1,5 @@
-[
-    {
+{
+    "tzupdate": {
         "category_id": 1,
         "description": "Set the system timezone based on IP geolocation",
         "first_submitted": 1441577921,
@@ -17,7 +17,7 @@
         "url_path": "/cgit/aur.git/snapshot/tzupdate.tar.gz",
         "version": "0.4.0-2"
     },
-    {
+    "yturl": {
         "category_id": 1,
         "description": "YouTube videos on the command line",
         "first_submitted": 1365426996,
@@ -35,4 +35,4 @@
         "url_path": "/cgit/aur.git/snapshot/yturl.tar.gz",
         "version": "1.20.0-2"
     }
-]
+}
