@@ -1,56 +1,63 @@
-|Build status| |Coverage| |Code quality| |Dependencies|
+===
+aur
+===
 
 aur is a Python library that makes it easy to access and parse data
 from the `Arch User Repository API`_.
 
+.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
+
+Usage
+-----
+
 .. code:: python
 
-    >>> import aur
-    >>> list(aur.search("yturl"))
-    [<Package: 'yturl-git'>, <Package: 'yturl'>]
-    >>> package = aur.info("cower")
-    >>> package.description
-    'A simple AUR agent with a pretentious name'
+    >>> yturl = aur.info('yturl')
+    >>> yturl.description
+    'YouTube videos on the command line'
+    >>> poco = aur.search('poco')
+    >>> poco
+    [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
+
+
+Documentation
+-------------
+
+Documentation is available on ReadTheDocs_.
+
+.. _ReadTheDocs: http://aur.readthedocs.org
 
 Installation
 ------------
 
-::
+From pip:
 
-    $ pip install aur
+.. code::
 
-Installing dependencies
------------------------
+    pip install aur
 
-If you install by `pip`_, these will be installed automatically, but
-otherwise:
+Manually:
 
-::
+.. code::
 
-    $ pip install -r requirements.txt
+    python setup.py install
+
+
+Documentation
+-------------
+
+.. code::
+
+    pydoc aur
+
 
 Testing
 -------
 
-::
+.. image:: https://travis-ci.org/cdown/aur.svg?branch=develop
+  :target: https://travis-ci.org/cdown/aur
+  :alt: Test status
 
-    $ pip install -r tests/requirements.txt
-    $ nosetests
+.. code::
 
-License
--------
-
-aur is `ISC licensed`_. See the LICENSE file for full details.
-
-.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
-.. _pip: https://pypi.python.org/pypi/pip
-.. _ISC licensed: http://en.wikipedia.org/wiki/ISC_license
-
-.. |Build status| image:: https://img.shields.io/travis/cdown/aur/master.svg
-   :target: https://travis-ci.org/cdown/aur
-.. |Coverage| image:: https://img.shields.io/coveralls/cdown/aur/master.svg
-   :target: https://coveralls.io/r/cdown/aur
-.. |Code quality| image:: https://img.shields.io/scrutinizer/g/cdown/aur.svg
-   :target: https://scrutinizer-ci.com/g/cdown/aur/code-structure/master/hot-spots
-.. |Dependencies| image:: https://img.shields.io/requires/github/cdown/aur.svg
-   :target: https://requires.io/github/cdown/aur/requirements/?branch=master
+    python setup.py test
