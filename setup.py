@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from setuptools.command.install import install
 
 with open('README.rst') as readme_f:
     README = readme_f.read()
@@ -14,7 +13,7 @@ with open('tests/requirements.txt') as test_requirements_f:
 
 setup(
     name='aur',
-    version='0.9.2',
+    version='0.10.0',
     description='Arch User Repository API interface.',
     long_description=README,
     author='Chris Down',
