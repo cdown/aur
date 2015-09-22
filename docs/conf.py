@@ -32,9 +32,11 @@ intersphinx_mapping = {
 
 autoclass_content = 'both'
 
-
-# These are only needed to not break ReadTheDocs
-latex_documents = man_pages = texinfo_documents = []
+# For building PDFs on ReadTheDocs
+latex_documents = [
+  ('index', '%s.tex' % project, '%s documentation' % project,
+   copyright, 'manual'),
+]
 
 
 # pylint: disable=unused-argument,too-many-arguments
