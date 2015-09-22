@@ -3,13 +3,18 @@ python:
   - 2.7
   - 3.3
   - 3.4
+  - 3.5
+
 install:
-  - pip install --use-mirrors -r requirements.txt
-  - pip install --use-mirrors -r tests/requirements.txt
-  - pip install --use-mirrors coveralls
-  - pip install --use-mirrors pep8
+  - 'pip install -r requirements.txt'
+  - 'pip install -r tests/requirements.txt'
+
 script:
-  - nosetests --with-coverage --cover-package=aur
-  - pep8 aur
-after_success:
-  - coveralls
+  - nosetests
+
+matrix:
+  fast_finish: true
+
+# This is required to enable container based Travis CI infrastructure.
+# See http://docs.travis-ci.com/user/migrating-from-legacy/
+sudo: false

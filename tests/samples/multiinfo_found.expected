@@ -1,0 +1,38 @@
+{
+    "tzupdate": {
+        "category_id": 1,
+        "description": "Set the system timezone based on IP geolocation",
+        "first_submitted": 1441577921,
+        "id": 229275,
+        "last_modified": 1441747990,
+        "license": "ISC",
+        "maintainer": "cdown",
+        "name": "tzupdate",
+        "num_votes": 1,
+        "out_of_date": false,
+        "package_base": "tzupdate",
+        "package_base_id": 99473,
+        "popularity": 0,
+        "url": "http://github.com/cdown/tzupdate",
+        "url_path": "/cgit/aur.git/snapshot/tzupdate.tar.gz",
+        "version": "0.4.0-2"
+    },
+    "yturl": {
+        "category_id": 1,
+        "description": "YouTube videos on the command line",
+        "first_submitted": 1365426996,
+        "id": 229289,
+        "last_modified": 1441751184,
+        "license": "MIT",
+        "maintainer": "cdown",
+        "name": "yturl",
+        "num_votes": 1,
+        "out_of_date": false,
+        "package_base": "yturl",
+        "package_base_id": 68930,
+        "popularity": 0,
+        "url": "http://github.com/cdown/yturl",
+        "url_path": "/cgit/aur.git/snapshot/yturl.tar.gz",
+        "version": "1.20.0-2"
+    }
+}

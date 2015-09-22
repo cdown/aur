@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
+from setuptools import setup
 
 with open('README.rst') as readme_f:
     README = readme_f.read()
@@ -17,13 +13,13 @@ with open('tests/requirements.txt') as test_requirements_f:
 
 setup(
     name='aur',
-    version='0.9.2',
+    version='0.10.0',
     description='Arch User Repository API interface.',
     long_description=README,
     author='Chris Down',
     author_email='chris@chrisdown.name',
     url='https://github.com/cdown/aur',
-    packages=['aur'],
+    py_modules=['aur'],
     license='ISC',
     zip_safe=False,
     keywords='aur arch linux',
