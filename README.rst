@@ -25,7 +25,7 @@ Documentation
 
 Documentation is available on ReadTheDocs_.
 
-.. _ReadTheDocs: http://aur.readthedocs.org
+.. _ReadTheDocs: https://aur.readthedocs.org
 
 Installation
 ------------
