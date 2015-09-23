@@ -177,7 +177,7 @@ _Package = namedtuple(
 class Package(_Package):
     '''
     All package information retrieved from the API is stored in a
-    :class:`Package`, which is a :py:func:`collections.namedtuple` with some
+    :class:`Package`, which is a :py:func:`~collections.namedtuple` with some
     extensions.
 
     All information about the package is available as attributes with the same
