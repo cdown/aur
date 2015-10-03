@@ -12,7 +12,6 @@
         "out_of_date": false,
         "package_base": "poco",
         "package_base_id": 13487,
-        "popularity": 0,
         "url": "http://www.pocoproject.org/",
         "url_path": "/cgit/aur.git/snapshot/poco.tar.gz",
         "version": "1.6.0-1"
@@ -30,7 +29,6 @@
         "out_of_date": false,
         "package_base": "flopoco",
         "package_base_id": 72798,
-        "popularity": 0,
         "url": "http://flopoco.gforge.inria.fr/",
         "url_path": "/cgit/aur.git/snapshot/flopoco.tar.gz",
         "version": "2.5.0-1"
@@ -48,7 +46,6 @@
         "out_of_date": false,
         "package_base": "libpoco-basic",
         "package_base_id": 74539,
-        "popularity": 0,
         "url": "http://www.pocoproject.org",
         "url_path": "/cgit/aur.git/snapshot/libpoco-basic.tar.gz",
         "version": "1.6.1-1"
