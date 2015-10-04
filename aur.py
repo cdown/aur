@@ -168,8 +168,7 @@ _Package = namedtuple(
     [
         'num_votes', 'description', 'url_path', 'last_modified', 'name',
         'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
-        'license', 'url', 'package_base', 'package_base_id', 'popularity',
-        'category_id',
+        'license', 'url', 'package_base', 'package_base_id', 'category_id',
     ],
 )
 
@@ -177,7 +176,7 @@ _Package = namedtuple(
 class Package(_Package):
     '''
     All package information retrieved from the API is stored in a
-    :class:`Package`, which is a :py:func:`collections.namedtuple` with some
+    :class:`Package`, which is a :py:func:`~collections.namedtuple` with some
     extensions.
 
     All information about the package is available as attributes with the same

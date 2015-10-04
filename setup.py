@@ -13,7 +13,7 @@ with open('tests/requirements.txt') as test_requirements_f:
 
 setup(
     name='aur',
-    version='0.10.0',
+    version='0.11.0',
     description='Arch User Repository API interface.',
     long_description=README,
     author='Chris Down',
@@ -31,6 +31,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
     test_suite='nose.collector',
     install_requires=REQUIREMENTS,
