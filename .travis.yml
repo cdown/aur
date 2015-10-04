@@ -1,16 +1,7 @@
 language: python
-python:
-  - 2.7
-  - 3.3
-  - 3.4
-  - 3.5
-
-install:
-  - 'pip install -r requirements.txt'
-  - 'pip install -r tests/requirements.txt'
-
-script:
-  - nosetests
+python: 3.5  # 3.5 requires manual download, so it needs to be selected
+install: pip install tox
+script: tox
 
 matrix:
   fast_finish: true
