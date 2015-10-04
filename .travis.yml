@@ -3,6 +3,10 @@ python: 3.5  # 3.5 requires manual download, so it needs to be selected
 install: pip install tox
 script: tox
 
+env:
+  # Github deployment key
+  secure: "cmI5Yyk0Y/3R5B3QtZN9Eh+d0b5qhikmDMZVCE+wFCfw/o8VScRPM6ixR+oYybSwewAkzTHRVA2s7uVt6PRUZOK6cPsr61CZ1pTqZRAyChoH2wMpLPS0yjV/PvPumuyen9+dlZ0g1dqP2k6dyQ1ckhcqdubUoYrRxx32A3USJLg="
+
 matrix:
   fast_finish: true
 
@@ -11,3 +15,8 @@ matrix:
 sudo: false
 
 cache: pip
+
+after_success:
+  - "curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge"
+  - "chmod a+x /tmp/travis-automerge"
+  - "BRANCHES_TO_MERGE_REGEX='^f/' BRANCH_TO_MERGE_INTO=develop GITHUB_REPO=cdown/aur /tmp/travis-automerge"
