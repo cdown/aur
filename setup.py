@@ -13,7 +13,7 @@ with open('tests/requirements.txt') as test_requirements_f:
 
 setup(
     name='aur',
-    version='0.10.0',
+    version='0.11.0',
     description='Arch User Repository API interface.',
     long_description=README,
     author='Chris Down',
