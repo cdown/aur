@@ -168,8 +168,7 @@ _Package = namedtuple(
     [
         'num_votes', 'description', 'url_path', 'last_modified', 'name',
         'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
-        'license', 'url', 'package_base', 'package_base_id', 'popularity',
-        'category_id',
+        'license', 'url', 'package_base', 'package_base_id', 'category_id',
     ],
 )
 

@@ -12,7 +12,6 @@
         "out_of_date": false,
         "package_base": "mpdmenu",
         "package_base_id": 70444,
-        "popularity": 0,
         "url": "http://github.com/cdown/mpdmenu",
         "url_path": "/cgit/aur.git/snapshot/mpdmenu.tar.gz",
         "version": "1.0.3-2"
@@ -30,7 +29,6 @@
         "out_of_date": false,
         "package_base": "xbanish",
         "package_base_id": 96833,
-        "popularity": 0,
         "url": "https://github.com/jcs/xbanish",
         "url_path": "/cgit/aur.git/snapshot/xbanish.tar.gz",
         "version": "1.4-1"
@@ -48,7 +46,6 @@
         "out_of_date": false,
         "package_base": "xnviewmp",
         "package_base_id": 18641,
-        "popularity": 0,
         "url": "http://www.xnview.com/en/xnviewmp/",
         "url_path": "/cgit/aur.git/snapshot/xnviewmp.tar.gz",
         "version": "0.72-1"
@@ -66,7 +63,6 @@
         "out_of_date": false,
         "package_base": "rbenv",
         "package_base_id": 51956,
-        "popularity": 0,
         "url": "https://github.com/sstephenson/rbenv",
         "url_path": "/cgit/aur.git/snapshot/rbenv.tar.gz",
         "version": "0.4.0-1"
@@ -84,7 +80,6 @@
         "out_of_date": false,
         "package_base": "dwm-cdown-git",
         "package_base_id": 69703,
-        "popularity": 0,
         "url": "https://github.com/cdown/dwm",
         "url_path": "/cgit/aur.git/snapshot/dwm-cdown-git.tar.gz",
         "version": "0.r1747.7fb62b4-2"
@@ -102,7 +97,6 @@
         "out_of_date": false,
         "package_base": "tzupdate",
         "package_base_id": 99473,
-        "popularity": 0,
         "url": "http://github.com/cdown/tzupdate",
         "url_path": "/cgit/aur.git/snapshot/tzupdate.tar.gz",
         "version": "0.4.0-2"
@@ -120,7 +114,6 @@
         "out_of_date": false,
         "package_base": "yturl",
         "package_base_id": 68930,
-        "popularity": 0,
         "url": "http://github.com/cdown/yturl",
         "url_path": "/cgit/aur.git/snapshot/yturl.tar.gz",
         "version": "1.20.0-2"
@@ -138,7 +131,6 @@
         "out_of_date": false,
         "package_base": "clipmenu",
         "package_base_id": 96827,
-        "popularity": 0,
         "url": "http://github.com/cdown/clipmenu",
         "url_path": "/cgit/aur.git/snapshot/clipmenu.tar.gz",
         "version": "1.1.0-1"
