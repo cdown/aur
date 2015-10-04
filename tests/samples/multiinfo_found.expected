@@ -12,7 +12,6 @@
         "out_of_date": false,
         "package_base": "tzupdate",
         "package_base_id": 99473,
-        "popularity": 0,
         "url": "http://github.com/cdown/tzupdate",
         "url_path": "/cgit/aur.git/snapshot/tzupdate.tar.gz",
         "version": "0.4.0-2"
@@ -30,7 +29,6 @@
         "out_of_date": false,
         "package_base": "yturl",
         "package_base_id": 68930,
-        "popularity": 0,
         "url": "http://github.com/cdown/yturl",
         "url_path": "/cgit/aur.git/snapshot/yturl.tar.gz",
         "version": "1.20.0-2"
