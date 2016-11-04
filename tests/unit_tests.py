@@ -55,11 +55,11 @@ def test_api_methods(test_file, should_raise_exc=None):
 
     if isinstance(got, list) or isinstance(got, types.GeneratorType):
         # We need to compare the data, not the generator itself, so run it.
-        got = [vars(package) for package in got]
+        got = [package._asdict() for package in got]
     elif isinstance(got, dict):
-        got = {pkg_name: vars(pkg) for pkg_name, pkg in got.items()}
+        got = {pkg_name: pkg._asdict() for pkg_name, pkg in got.items()}
     else:
-        got = vars(got)
+        got = got._asdict()
 
     # Since we can't store all data types in the JSON, we store them the same
     # way the API would return them. Convert them back here.
