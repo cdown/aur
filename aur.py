@@ -119,11 +119,11 @@ def _query_api(query, query_type, multi=False):
     res_data = res_handle.json()
     log.debug('API returned: %r', res_data)
 
-    if res_data["type"] == "error":
-        if res_data["results"] == "Query arg too small":
+    if res_data.get("type") == "error" or res_data.get("results") is None:
+        if res_data.get("results") == "Query arg too small":
             raise QueryTooShortError(res_data['results'])
         else:
-            raise APIError(res_data["results"])
+            raise APIError(res_data.get("results", "Unspecified API error."))
 
     raw_packages = res_data['results']
 
