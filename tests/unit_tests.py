@@ -16,6 +16,7 @@ import hypothesis.strategies as st
 
 SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
 
+
 @parameterized([
     'msearch_found',
     'msearch_not_found',
@@ -24,6 +25,8 @@ SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
     ('multiinfo_only_partial_found', aur.NoSuchPackageError),
     'search_found',
     'search_not_found',
+    ('search_missing_results', aur.APIError),
+    ('search_query_too_short', aur.QueryTooShortError),
 ])
 @httpretty.activate
 def test_api_methods(test_file, should_raise_exc=None):
