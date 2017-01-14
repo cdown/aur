@@ -19,10 +19,19 @@
 aur is a Python library that makes it easy to access and parse data from the
 `Arch User Repository API`_.
 
-.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
-
 Usage
 -----
+
+Full documentation is available on ReadTheDocs_.
+
+If you know how to use the `Arch User Repository API`_, you know how to use
+this module. The only difference is that `PascalCase`_ package attributes are
+converted to confirm to Python conventions (for example, :code:`OutOfDate`
+becomes :code:`out_of_date`, and :code:`FirstSubmitted` becomes
+:code:`first_submitted`).
+
+.. _PascalCase: https://en.wikipedia.org/wiki/PascalCase
+.. _ReadTheDocs: https://aur.readthedocs.org
 
 .. code:: python
 
@@ -31,14 +40,11 @@ Usage
     'YouTube videos on the command line'
     >>> poco = aur.search('poco')
     >>> poco
-    [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
-
-Documentation
--------------
- 
-Documentation is available on ReadTheDocs_.
-
-.. _ReadTheDocs: https://aur.readthedocs.org
+    [<Package: flopoco>, <Package: poco-git>, <Package: poco>, <Package: libpoco-basic>]
+    >>> poco[0].first_submitted
+    datetime.datetime(2013, 8, 21, 21, 3, 9)
+    >>> aur.multiinfo(['tzupdate', 'xinput-toggle'])
+    {'tzupdate': <Package: tzupdate>, 'xinput-toggle': <Package: xinput-toggle>}
 
 Installation
 ------------
@@ -66,3 +72,5 @@ Testing
     ----------------------------------------------------------------------
     Ran 10 tests in 4.088s
     OK
+
+.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
