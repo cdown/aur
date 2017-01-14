@@ -19,7 +19,7 @@
 aur is a Python library that makes it easy to access and parse data from the
 `Arch User Repository API`_.
 
--.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
+.. _Arch User Repository API: https://wiki.archlinux.org/index.php/AurJson
 
 Usage
 -----
