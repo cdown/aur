@@ -1,36 +1,62 @@
 {
     "tzupdate": {
-        "category_id": 1,
-        "description": "Set the system timezone based on IP geolocation",
-        "first_submitted": 1441577921,
-        "id": 229275,
-        "last_modified": 1441747990,
-        "license": "ISC",
-        "maintainer": "cdown",
+        "id": 682388,
         "name": "tzupdate",
-        "num_votes": 1,
-        "out_of_date": false,
-        "package_base": "tzupdate",
         "package_base_id": 99473,
+        "package_base": "tzupdate",
+        "version": "2.0.0-1",
+        "description": "Set the system timezone based on IP geolocation",
         "url": "http://github.com/cdown/tzupdate",
+        "num_votes": 19,
+        "popularity": 0.905803,
+        "out_of_date": true,
+        "maintainer": "cdown",
+        "first_submitted": 1441577921,
+        "last_modified": 1578054842,
         "url_path": "/cgit/aur.git/snapshot/tzupdate.tar.gz",
-        "version": "0.4.0-2"
+        "depends": [
+            "python",
+            "python-setuptools"
+        ],
+        "make_depends": [],
+        "opt_depends": [],
+        "conflicts": [],
+        "provides": [],
+        "license": [
+            "Public Domain"
+        ],
+        "keywords": []
     },
     "yturl": {
-        "category_id": 1,
-        "description": "YouTube videos on the command line",
-        "first_submitted": 1365426996,
-        "id": 229289,
-        "last_modified": 1441751184,
-        "license": "MIT",
-        "maintainer": "cdown",
+        "id": 485900,
         "name": "yturl",
-        "num_votes": 1,
-        "out_of_date": false,
-        "package_base": "yturl",
         "package_base_id": 68930,
+        "package_base": "yturl",
+        "version": "2.0.2-1",
+        "description": "YouTube videos on the command line",
         "url": "http://github.com/cdown/yturl",
+        "num_votes": 6,
+        "popularity": 0,
+        "out_of_date": false,
+        "maintainer": "cdown",
+        "first_submitted": 1365426996,
+        "last_modified": 1518379586,
         "url_path": "/cgit/aur.git/snapshot/yturl.tar.gz",
-        "version": "1.20.0-2"
+        "depends": [
+            "python",
+            "python-requests",
+            "python-setuptools"
+        ],
+        "make_depends": [],
+        "opt_depends": [],
+        "conflicts": [],
+        "provides": [],
+        "license": [
+            "Public Domain"
+        ],
+        "keywords": [
+            "flash",
+            "youtube"
+        ]
     }
 }

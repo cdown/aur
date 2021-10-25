@@ -4,17 +4,15 @@ aur is a Python library that makes it easy to access and parse data from the
 
 .. _`Arch User Repository API`: https://wiki.archlinux.org/index.php/AurJson
 '''
-
+import dataclasses
 import inflection
-import requests
-from datetime import datetime
-from collections import namedtuple
 import logging
+import requests
 
-try:
-    from urllib.parse import urlencode
-except ImportError:  # Python 2 fallback
-    from urllib import urlencode
+from datetime import datetime
+from enum import Enum, auto
+from typing import List, Optional
+from urllib.parse import urlencode
 
 
 log = logging.getLogger(__name__)
@@ -30,26 +28,29 @@ _TYPE_CONVERSION_FUNCTIONS = {
 }
 
 
-def search(package_name_substring):
+def search(package_name_substring, search_by='name-desc'):
     '''
     Return :py:class:`Package` objects where `package_name_substring` is a
-    substring.
+    substring. Optional argument `search_by` can be supplied to search by
+    specific package field.
 
     >>> search('poco')
     [<Package: poco>, <Package: flopoco>, <Package: libpoco-basic>]
     '''
-    return _query_api(package_name_substring, 'search')
+    search_by = SearchBy.parse(search_by).value
+    return _query_api(package_name_substring, 'search', by=search_by)
 
 
 def msearch(maintaining_user):
     '''
     Return :py:class:`Package` objects where the maintainer is
-    `maintaining_user`.
+    `maintaining_user`. Equialent of :py:func:`search` method called with
+    `search_by='maintainer'`
 
     >>> msearch('cdown')
     [<Package: mpdmenu>, <Package: tzupdate>, <Package: yturl>]
     '''
-    return _query_api(maintaining_user, 'msearch')
+    return search(maintaining_user, search_by='maintainer')
 
 
 def multiinfo(package_names_or_ids):
@@ -63,7 +64,7 @@ def multiinfo(package_names_or_ids):
     >>> multiinfo(['yturl', 'tzupdate'])
     {'tzupdate': <Package: tzupdate>, 'yturl': <Package: yturl>}
     '''
-    got_packages = _query_api(package_names_or_ids, 'multiinfo', multi=True)
+    got_packages = _query_api(package_names_or_ids, 'info', multi=True)
     log.debug('Requested: %r, Got: %r', package_names_or_ids, got_packages)
 
     # Check that all requests packages were retrieved. Since it's possible to
@@ -92,11 +93,11 @@ def info(package_name_or_id):
     <Package: linux-bfs>
     '''
     package_multi = multiinfo([package_name_or_id])
-    _, package = package_multi.popitem()
+    _, package = package_multi.popitem()  # we probably should get dict element by its id here
     return package
 
 
-def _query_api(query, query_type, multi=False):
+def _query_api(query, query_type, multi=False, **kwargs):
     '''
     Perform a HTTP query against the AUR's API.
 
@@ -109,21 +110,25 @@ def _query_api(query, query_type, multi=False):
     if multi:
         query_key += "[]"
 
-    res_handle = requests.get(
-        "https://aur.archlinux.org/rpc.php?" + urlencode({
-            "type": query_type,
-            query_key: query
-        }, doseq=True)
-    )
+    params = {
+        "v": "5",
+        "type": query_type,
+        query_key: query,
+    }
+    if kwargs:
+        params.update(**kwargs)
+
+    res_handle = requests.get("https://aur.archlinux.org/rpc.php?" + urlencode(params, doseq=True))
 
     res_data = res_handle.json()
     log.debug('API returned: %r', res_data)
 
     if res_data.get("type") == "error" or res_data.get("results") is None:
-        if res_data.get("results") == "Query arg too small":
+        error = res_data.get("error", "Unspecified API error.")
+        if error == "Query arg too small.":
             raise QueryTooShortError(res_data['results'])
         else:
-            raise APIError(res_data.get("results", "Unspecified API error."))
+            raise APIError(error)
 
     raw_packages = res_data['results']
 
@@ -140,6 +145,9 @@ def _decamelcase_output(api_data):
     }
 
 
+
+
+
 def _raw_api_package_to_package(raw_package_info):
     '''
     Sanitise package metadata, setting types appropriately, and decamelcasing
@@ -147,7 +155,7 @@ def _raw_api_package_to_package(raw_package_info):
     '''
     pkg = _decamelcase_output(raw_package_info)
 
-    keys_to_rm = set(pkg) - set(Package._fields)
+    keys_to_rm = set(pkg) - set(Package._fields())
     if keys_to_rm:
         log.warning(
             'API returned unknown package metadata, removing: %r', keys_to_rm,
@@ -163,21 +171,37 @@ def _raw_api_package_to_package(raw_package_info):
     return Package(**pkg)
 
 
-_Package = namedtuple(
-    'Package',
-    [
-        'num_votes', 'description', 'url_path', 'last_modified', 'name',
-        'out_of_date', 'id', 'first_submitted', 'maintainer', 'version',
-        'license', 'url', 'package_base', 'package_base_id', 'category_id',
-    ],
-)
+class SearchBy(Enum):
+    '''
+    Enumeration for the search_by field.
+    '''
+    Name = 'name'
+    NameDesc = 'name-desc'
+    Maintainer = 'maintainer'
+    Depends = 'depends'
+    MakeDepends = 'makedepends'
+    OptDepends = 'optdepends'
+    CheckDepends = 'checkdepends'
+
+    @staticmethod
+    def parse(value):
+        '''
+        parse enum value from string
+        '''
+        if isinstance(value, SearchBy):
+            return value
+        try:
+            return SearchBy(value.lower())
+        except Exception:
+            raise InvalidSearchFieldError()
 
 
-class Package(_Package):
+@dataclasses.dataclass(frozen=True)
+class Package:
     '''
     All package information retrieved from the API is stored in a
-    :class:`Package`, which is a :py:func:`~collections.namedtuple` with some
-    extensions.
+    :class:`Package`, which is a :py:func:`~dataclasses.dataclass` with some
+    extensions for backward compatibility.
 
     All information about the package is available as attributes with the same
     name as those returned by the API for each package, except that each one is
@@ -186,7 +210,39 @@ class Package(_Package):
     .. _`snake case`: https://en.wikipedia.org/wiki/Snake_case
     .. _`Pascal case`: http://c2.com/cgi/wiki?PascalCase
     '''
-    __slots__ = ()
+    id: int
+    name: str
+    package_base_id: int
+    package_base: str
+    version: str
+    description: str
+    url: str
+    num_votes: int
+    popularity: float
+    out_of_date: bool
+    maintainer: Optional[str]
+    first_submitted: datetime
+    last_modified: datetime
+    url_path: str
+    depends: List[str] = dataclasses.field(default_factory=list)
+    make_depends: List[str] = dataclasses.field(default_factory=list)
+    opt_depends: List[str] = dataclasses.field(default_factory=list)
+    conflicts: List[str] = dataclasses.field(default_factory=list)
+    provides: List[str] = dataclasses.field(default_factory=list)
+    license: List[str] = dataclasses.field(default_factory=list)
+    keywords: List[str] = dataclasses.field(default_factory=list)
+
+    # some methods for namedtuple compatibility (almost)
+    @classmethod
+    def _fields(cls):
+        return [field.name for field in dataclasses.fields(cls)]
+
+    def _asdict(self):
+        return dataclasses.asdict(self)
+
+    def _replace(self, /, **kwargs):
+        return dataclasses.replace(self, **kwargs)
+
     def __repr__(self):
         return '<%s: %s>' % (type(self).__name__, self.name)
 
@@ -201,11 +257,19 @@ class APIError(AURError):
     exception for.
     '''
 
+
+class InvalidSearchFieldError(AURError):
+    '''
+    Raised when invalid `search_by` argument supplied.
+    '''
+
+
 class QueryTooShortError(APIError):
     '''
     Raised when the query entered was too short. Typically, most
     :py:func:`search` queries must be at least 3 characters long.
     '''
+
 
 class NoSuchPackageError(AURError):
     '''
