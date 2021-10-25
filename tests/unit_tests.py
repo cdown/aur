@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
-import json
-import types
-import os
-import mock
-import aur
 import httpretty
+import json
+import mock
+import os
 import re
-from nose_parameterized import parameterized
-from nose.tools import eq_ as eq, assert_raises
-from hypothesis import given, assume
 import testfixtures
+import types
+
+import aur
 import hypothesis.strategies as st
+
+from hypothesis import given, assume
+from parameterized import parameterized
+from nose.tools import eq_ as eq, assert_raises
 
 
 SAMPLE_DIR = os.path.join(os.path.dirname(__file__), 'samples')
@@ -97,7 +99,7 @@ def test_info(package):
 
 @given(st.lists(st.text(), min_size=1))
 def test_unknown_package_keys_are_removed_and_warn(unknown_package_keys):
-    known_package_keys = list(aur.Package._fields)
+    known_package_keys = list(aur.Package._fields())
     assume(not any(upk in known_package_keys for upk in unknown_package_keys))
 
     with open(os.path.join(SAMPLE_DIR, 'search_found.api_response')) as api_f:
